@@ -13,8 +13,13 @@ const generateToken = (user) => {
 
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
+let role = 'member';
+
+if (email === process.env.ADMIN_EMAIL) {
+  role = 'admin';
+}
     const existing = await User.findOne({ where: { email } });
     if (existing) {
       return res.status(400).json({ success: false, message: 'Email đã được sử dụng' });
