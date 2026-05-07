@@ -8,8 +8,8 @@ exports.getAll = async (req, res) => {
     const { search } = req.query;
     const where = { isActive: true };
     if (search) where[Op.or] = [
-      { taskCode: { [Op.like]: `%${search}%` } },
-      { taskName: { [Op.like]: `%${search}%` } }
+      { taskCode: { [Op.iLike]: `%${search}%` } },
+      { taskName: { [Op.iLike]: `%${search}%` } }
     ];
     const templates = await TaskTemplate.findAll({ where, include, order: [['taskCode','ASC']] });
     res.json({ success: true, data: templates });

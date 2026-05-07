@@ -2,8 +2,8 @@ import axios from 'axios';
 import { useOfflineStore } from '../store/offlineStore';
 
 const api = axios.create({
-  baseURL: '/api',
-  timeout: 5000  // 5s — đủ cho LAN, không đơ khi offline
+  baseURL: import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : '/api',
+  timeout: 10000
 });
 
 // ── Response interceptor ──────────────────────────────────

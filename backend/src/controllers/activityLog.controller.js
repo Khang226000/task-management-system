@@ -8,7 +8,7 @@ exports.getLogs = async (req, res) => {
 
     if (action)  where.action = action;
     if (userId)  where.userId = userId;
-    if (search)  where.description = { [Op.like]: `%${search}%` };
+    if (search)  where.description = { [Op.iLike]: `%${search}%` };
 
     // Lọc theo ngày đơn
     if (date) {

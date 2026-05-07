@@ -2,12 +2,6 @@ const { Task, MonthlyTask } = require('../models');
 const path = require('path');
 const fs   = require('fs');
 
-/**
- * Upload file đính kèm cho task (sự kiện hoặc tháng)
- * POST /api/upload/task/:id        — Event task
- * POST /api/upload/monthly/:id     — Monthly task
- */
-
 const buildFileInfo = (file) => ({
   filename:     file.filename,
   originalName: file.originalname,
@@ -24,6 +18,7 @@ exports.uploadTaskFile = async (req, res) => {
     const task = await Task.findByPk(req.params.id);
     if (!task) return res.status(404).json({ success: false, message: 'Không tìm thấy công việc' });
 
+    // JSONB — attachments đã là array, không cần parse
     const existing = Array.isArray(task.attachments) ? task.attachments : [];
     const newFile  = buildFileInfo(req.file);
     await task.update({ attachments: [...existing, newFile] });
@@ -54,7 +49,6 @@ exports.uploadMonthlyFile = async (req, res) => {
 exports.deleteTaskFile = async (req, res) => {
   try {
     const { id, filename } = req.params;
-    // Ngăn path traversal attack
     if (filename.includes('/') || filename.includes('\\') || filename.includes('..')) {
       return res.status(400).json({ success: false, message: 'Tên file không hợp lệ' });
     }
@@ -77,7 +71,6 @@ exports.deleteTaskFile = async (req, res) => {
 exports.deleteMonthlyFile = async (req, res) => {
   try {
     const { id, filename } = req.params;
-    // Ngăn path traversal attack
     if (filename.includes('/') || filename.includes('\\') || filename.includes('..')) {
       return res.status(400).json({ success: false, message: 'Tên file không hợp lệ' });
     }

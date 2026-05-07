@@ -9,7 +9,6 @@ const taskInclude = [
 
 // Resolve collaborator IDs → User objects
 async function resolveCollaborators(tasks) {
-  // Collect all unique collaborator IDs
   const allIds = new Set();
   tasks.forEach(t => {
     const collab = Array.isArray(t.collaborators) ? t.collaborators : [];
@@ -44,7 +43,7 @@ exports.getTasks = async (req, res) => {
     if (taskType) where.taskType = taskType;
     if (month) where.month = parseInt(month);
     if (year) where.year = parseInt(year);
-    if (search) where.taskName = { [Op.like]: `%${search}%` };
+    if (search) where.taskName = { [Op.iLike]: `%${search}%` };
     if (parentCode !== undefined) where.parentCode = parentCode || null;
 
     const tasks = await Task.findAll({
@@ -69,7 +68,7 @@ exports.getTaskTree = async (req, res) => {
     if (leadDepartment) where.leadDepartment = leadDepartment;
     if (deputyDirector) where.deputyDirector = deputyDirector;
     if (status)         where.status         = status;
-    if (search)         where.taskName       = { [Op.like]: `%${search}%` };
+    if (search)         where.taskName       = { [Op.iLike]: `%${search}%` };
 
     // Khi lọc theo assigneeId: lấy tất cả tasks rồi lọc ở app level
     // để giữ cấu trúc cây (parent luôn hiển thị nếu có child khớp)
@@ -114,7 +113,7 @@ exports.getKanbanBoard = async (req, res) => {
     if (workCategory)   where.workCategory   = workCategory;
     if (assigneeId)     where.assigneeId     = assigneeId;
     if (status)         where.status         = status;
-    if (search)         where.taskName       = { [Op.like]: `%${search}%` };
+    if (search)         where.taskName       = { [Op.iLike]: `%${search}%` };
 
     const tasks = await Task.findAll({
       where,
@@ -169,6 +168,7 @@ exports.createTask = async (req, res) => {
       if (body[df] === '' || body[df] === 'Invalid Date') body[df] = null;
     }
     if (body.assigneeId === '') body.assigneeId = null;
+    // collaborators phải là array — JSONB tự xử lý, chỉ cần đảm bảo là array
     if (body.collaborators !== undefined && !Array.isArray(body.collaborators)) {
       try { body.collaborators = JSON.parse(body.collaborators); } catch { body.collaborators = []; }
     }
@@ -212,7 +212,7 @@ exports.updateTask = async (req, res) => {
     }
     // assigneeId rỗng → null
     if (body.assigneeId === '') body.assigneeId = null;
-    // collaborators phải là array
+    // collaborators phải là array — JSONB tự xử lý
     if (body.collaborators !== undefined && !Array.isArray(body.collaborators)) {
       try { body.collaborators = JSON.parse(body.collaborators); } catch { body.collaborators = []; }
     }

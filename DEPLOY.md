@@ -1,216 +1,242 @@
-# Hướng dẫn Deploy Production — CASIC Task
+# Hướng dẫn Deploy lên Render (Free Tier)
 
-## Yêu cầu hệ thống
+## Tổng quan kiến trúc
 
-| Thành phần | Phiên bản tối thiểu |
+```
+GitHub Repo
+    │
+    ▼
+Render Web Service  ──►  Render PostgreSQL (Free)
+  (Node.js backend)       DATABASE_URL tự động inject
+  (Serve frontend dist)
+```
+
+---
+
+## Bước 1 — Chuẩn bị repository GitHub
+
+### 1.1 Đảm bảo `.gitignore` đúng
+
+Các thứ KHÔNG được commit:
+- `node_modules/`
+- `backend/.env`
+- `frontend/dist/`
+- `backend/certs/`
+- `backend/uploads/*` (trừ `.gitkeep`)
+
+### 1.2 Push lên GitHub
+
+```bash
+git add .
+git commit -m "chore: migrate to PostgreSQL, ready for Render deploy"
+git push origin main
+```
+
+---
+
+## Bước 2 — Tạo PostgreSQL database trên Render
+
+1. Vào [render.com](https://render.com) → **New** → **PostgreSQL**
+2. Điền thông tin:
+   - **Name**: `casic-task-db`
+   - **Database**: `qlcv_db`
+   - **User**: `qlcv_user`
+   - **Region**: Singapore (gần nhất với VN)
+   - **Plan**: Free
+3. Click **Create Database**
+4. Chờ ~1 phút, sau đó copy **Internal Database URL** (dùng cho Web Service cùng region)
+
+---
+
+## Bước 3 — Tạo Web Service trên Render
+
+1. **New** → **Web Service**
+2. Kết nối GitHub repo
+3. Cấu hình:
+
+| Trường | Giá trị |
 |---|---|
-| Node.js | 18.x trở lên |
-| SQL Server | 2017 trở lên |
-| Windows | 10/11 hoặc Server 2019+ |
-| RAM | 2GB trở lên |
+| **Name** | `casic-task` |
+| **Region** | Singapore |
+| **Branch** | `main` |
+| **Root Directory** | *(để trống)* |
+| **Runtime** | Node |
+| **Build Command** | `cd frontend && npm install && npm run build && cd ../backend && npm install --omit=dev` |
+| **Start Command** | `node backend/src/server.js` |
+| **Plan** | Free |
+
+### 3.1 Cấu hình Environment Variables
+
+Trong tab **Environment**, thêm các biến sau:
+
+| Key | Value |
+|---|---|
+| `NODE_ENV` | `production` |
+| `DATABASE_URL` | *(paste Internal Database URL từ bước 2)* |
+| `JWT_SECRET` | *(click "Generate" để tạo ngẫu nhiên)* |
+| `JWT_EXPIRES_IN` | `30d` |
+| `FRONTEND_URL` | `https://casic-task.onrender.com` *(URL của service này)* |
+
+> ⚠️ `DATABASE_URL` từ Render đã có SSL. **Không** thêm `DB_SSL=false`.
+
+4. Click **Create Web Service**
 
 ---
 
-## 1. Cài đặt lần đầu
+## Bước 4 — Kiểm tra deploy
 
-### Bước 1 — Clone/copy project
+### 4.1 Xem build logs
 
-```bash
-git clone <repo-url>
-cd casic-task
-```
+Render sẽ tự động:
+1. Clone repo
+2. Chạy Build Command (build frontend + install backend)
+3. Chạy Start Command
+4. Server tự tạo bảng PostgreSQL khi khởi động lần đầu
 
-### Bước 2 — Cấu hình môi trường
-
-```bash
-copy backend\.env.example backend\.env
-```
-
-Mở `backend\.env` và điền thông tin thực:
-
-```env
-DB_HOST=TEN_SERVER\INSTANCE   # Ví dụ: ZINHDEPTRAI\HUNGKHANG
-DB_PORT=1433
-DB_NAME=QLCV_DB
-DB_USER=sa
-DB_PASSWORD=mat_khau_cua_ban
-
-JWT_SECRET=chuoi_ngau_nhien_dai_it_nhat_32_ky_tu
-```
-
-> ⚠️ **Bảo mật**: Không bao giờ commit file `.env` lên Git.
-
-### Bước 3 — Chuẩn bị SQL Server
-
-1. Mở SQL Server Management Studio (SSMS)
-2. Chạy file `database/QLCV_SQLServer_Schema.sql` để tạo database và bảng
-3. Đảm bảo SQL Server Authentication được bật (không chỉ Windows Auth)
-4. Đảm bảo tài khoản `sa` được bật và có quyền truy cập `QLCV_DB`
-
-### Bước 4 — Build và khởi động
-
-```bat
-build-production.bat
-```
-
-Hoặc thủ công:
-
-```bash
-# Build frontend
-cd frontend
-npm install
-npm run build
-cd ..
-
-# Cài backend
-cd backend
-npm install --omit=dev
-cd ..
-```
-
-### Bước 5 — Kiểm tra database
-
-```bash
-node backend/scripts/setup-db.js
-```
-
-Script này sẽ:
-- Kiểm tra kết nối SQL Server
-- Tạo bảng nếu chưa có
-- Tạo tài khoản admin mặc định nếu chưa có
-
-### Bước 6 — Khởi động server
-
-```bat
-start-server.bat
-```
-
-Hoặc:
-
-```bash
-node backend/src/server.js
-```
-
----
-
-## 2. Cấu hình SSL (HTTPS)
-
-Server tự động dùng HTTPS nếu có cert trong `backend/certs/`:
+### 4.2 Kiểm tra health
 
 ```
-backend/certs/
-  server.key   ← Private key
-  server.crt   ← Certificate
-  ca.crt       ← CA certificate (tùy chọn)
-```
-
-Nếu không có cert, server chạy HTTP (không an toàn — chỉ dùng cho test).
-
----
-
-## 3. Deploy lên hosting / VPS
-
-### Option A — Deploy trực tiếp trên Windows Server
-
-1. Cài Node.js 18+ trên server
-2. Cài SQL Server và tạo database `QLCV_DB`
-3. Copy toàn bộ project (trừ `node_modules`, `.env`, `dist`)
-4. Cấu hình `.env` trên server
-5. Chạy `build-production.bat`
-6. Dùng PM2 để giữ server chạy liên tục:
-
-```bash
-npm install -g pm2
-pm2 start backend/src/server.js --name casic-task
-pm2 save
-pm2 startup
-```
-
-### Option B — Deploy qua GitHub + Cloudflare Tunnel
-
-1. Push code lên GitHub (đảm bảo `.env` trong `.gitignore`)
-2. Trên server, pull code về
-3. Cấu hình `.env`
-4. Build và chạy server
-5. Cấu hình Cloudflare Tunnel để expose ra internet:
-
-```bash
-cloudflare/cloudflared.exe tunnel --url https://localhost:443
-```
-
----
-
-## 4. Biến môi trường đầy đủ
-
-| Biến | Mô tả | Bắt buộc |
-|---|---|---|
-| `DB_HOST` | Tên server SQL Server | ✅ |
-| `DB_PORT` | Port SQL Server (mặc định 1433) | ✅ |
-| `DB_NAME` | Tên database | ✅ |
-| `DB_USER` | Tài khoản SQL Server | ✅ |
-| `DB_PASSWORD` | Mật khẩu SQL Server | ✅ |
-| `JWT_SECRET` | Secret key cho JWT (tối thiểu 32 ký tự) | ✅ |
-| `JWT_EXPIRES_IN` | Thời hạn token (mặc định 30d) | ❌ |
-| `PORT` | Port HTTPS (mặc định 443) | ❌ |
-| `PORT_HTTP` | Port HTTP redirect (mặc định 80) | ❌ |
-| `NODE_ENV` | Môi trường (production/development) | ❌ |
-| `FRONTEND_URL` | URL frontend cho CORS | ❌ |
-| `DNS_PORT` | Port DNS server nội bộ (mặc định 5454) | ❌ |
-
----
-
-## 5. Tài khoản mặc định
-
-Sau khi chạy `setup-db.js`, tài khoản admin mặc định:
-
-- **Email**: `admin@qlcv.vn`
-- **Password**: `Admin@2024`
-
-> ⚠️ **Đổi mật khẩu ngay sau khi đăng nhập lần đầu!**
-
----
-
-## 6. Kiểm tra health
-
-```
-GET https://casictask.local/api/health
+GET https://casic-task.onrender.com/api/health
 ```
 
 Response thành công:
 ```json
 {
   "status": "OK",
-  "protocol": "HTTPS ✅",
-  "uptime": "120s"
+  "db": "PostgreSQL ✅",
+  "uptime": "30s"
 }
+```
+
+### 4.3 Tài khoản admin mặc định
+
+Lần đầu khởi động, server tự tạo:
+- **Email**: `admin@qlcv.vn`
+- **Password**: `Admin@2024`
+
+> ⚠️ Đổi mật khẩu ngay sau khi đăng nhập!
+
+---
+
+## Bước 5 — Cấu hình tự động deploy (Auto-Deploy)
+
+Render tự động redeploy khi push lên `main`. Để tắt:
+- Web Service → Settings → **Auto-Deploy** → Off
+
+---
+
+## Lưu ý Free Tier
+
+| Giới hạn | Free Tier |
+|---|---|
+| Web Service | Spin down sau 15 phút không có request (cold start ~30s) |
+| PostgreSQL | 1GB storage, xóa sau 90 ngày không active |
+| Bandwidth | 100GB/tháng |
+| Build time | 500 phút/tháng |
+
+**Giải pháp tránh cold start**: Dùng [UptimeRobot](https://uptimerobot.com) ping `/api/health` mỗi 14 phút (miễn phí).
+
+---
+
+## Deploy thủ công (không dùng render.yaml)
+
+Nếu muốn tách frontend/backend riêng:
+
+### Backend only trên Render
+
+Build Command:
+```bash
+npm install --omit=dev
+```
+
+Start Command:
+```bash
+node src/server.js
+```
+
+Root Directory: `backend`
+
+### Frontend trên Render Static Site
+
+Build Command:
+```bash
+npm install && npm run build
+```
+
+Publish Directory: `dist`
+
+Root Directory: `frontend`
+
+Thêm env var: `VITE_API_URL=https://casic-task-backend.onrender.com`
+
+---
+
+## Development local với PostgreSQL
+
+### Cài PostgreSQL local
+
+```bash
+# Windows: tải từ https://www.postgresql.org/download/windows/
+# Hoặc dùng Docker:
+docker run --name postgres-local -e POSTGRES_PASSWORD=123 -p 5432:5432 -d postgres:16
+```
+
+### Tạo database
+
+```sql
+CREATE DATABASE qlcv_db;
+```
+
+### Cấu hình .env
+
+```env
+DATABASE_URL=postgresql://postgres:123@localhost:5432/qlcv_db
+DB_SSL=false
+NODE_ENV=development
+```
+
+### Khởi động
+
+```bash
+# Kiểm tra kết nối và tạo bảng
+node backend/scripts/setup-db.js
+
+# Chạy backend
+cd backend && npm run dev
+
+# Chạy frontend (terminal khác)
+cd frontend && npm run dev
 ```
 
 ---
 
-## 7. Xử lý sự cố thường gặp
+## Troubleshooting
 
-### Lỗi kết nối SQL Server
+### Lỗi SSL khi kết nối PostgreSQL local
 
 ```
-❌ Không thể kết nối SQL Server: Login failed for user 'sa'
+Error: self signed certificate
 ```
+
+Thêm vào `.env`:
+```env
+DB_SSL=false
+```
+
+### Lỗi "relation does not exist"
+
+Sequelize chưa tạo bảng. Chạy:
+```bash
+node backend/scripts/setup-db.js
+```
+
+### Build thất bại trên Render
 
 Kiểm tra:
-1. SQL Server Authentication được bật trong Server Properties → Security
-2. Tài khoản `sa` được bật: `ALTER LOGIN sa ENABLE; ALTER LOGIN sa WITH PASSWORD = 'mat_khau';`
-3. TCP/IP được bật trong SQL Server Configuration Manager
+1. `package.json` có `"engines": { "node": ">=18.0.0" }`
+2. Build Command đúng thứ tự (frontend trước, backend sau)
+3. Không có file `.env` trong repo (dùng Environment Variables trên Render)
 
-### Lỗi port 443/80 bị chiếm
+### Cold start chậm
 
-Chạy server với quyền Administrator, hoặc đổi port trong `.env`:
-```env
-PORT=5000
-PORT_HTTP=8080
-```
-
-### Frontend không load
-
-Đảm bảo đã build frontend trước:
-```bash
-cd frontend && npm run build
-```
+Free tier Render spin down sau 15 phút. Dùng UptimeRobot ping `/api/health` mỗi 14 phút.

@@ -1,10 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../database/connection');
 
-/**
- * TaskTemplate - Danh sách công việc mẫu
- * Dùng để tạo task nhanh từ template có sẵn
- */
 const TaskTemplate = sequelize.define('TaskTemplate', {
   id: {
     type: DataTypes.UUID,
@@ -41,8 +37,7 @@ const TaskTemplate = sequelize.define('TaskTemplate', {
   },
   estimatedDays: {
     type: DataTypes.INTEGER,
-    defaultValue: 7,
-    comment: 'Số ngày dự kiến hoàn thành'
+    defaultValue: 7
   },
   notes: {
     type: DataTypes.TEXT,

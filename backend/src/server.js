@@ -7,8 +7,7 @@ const path        = require('path');
 const fs          = require('fs');
 const compression = require('compression');
 const rateLimit   = require('express-rate-limit');
-const { sequelize }        = require('./database/connection');
-const { startDNS, getLocalIP, DNS_DOMAIN } = require('./dns-server');
+const { sequelize } = require('./database/connection');
 
 const authRoutes         = require('./routes/auth.routes');
 const taskRoutes         = require('./routes/task.routes');
@@ -24,13 +23,13 @@ const paymentRoutes      = require('./routes/payment.routes');
 const departmentRoutes   = require('./routes/department.routes');
 
 const app     = express();
-const PORT      = parseInt(process.env.PORT)      || 443;
-const PORT_HTTP = parseInt(process.env.PORT_HTTP) || 80;
+// Render inject PORT tự động; local fallback 5000
+const PORT    = parseInt(process.env.PORT) || 5000;
 const IS_PROD = process.env.NODE_ENV === 'production';
 
 // ── Rate limiting ───────────────────────────────────────────
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 phút
+  windowMs: 15 * 60 * 1000,
   max: 500,
   standardHeaders: true,
   legacyHeaders: false,
@@ -47,6 +46,10 @@ const authLimiter = rateLimit({
 
 // ── Middleware ──────────────────────────────────────────────
 app.use(compression());
+
+// Trust proxy — bắt buộc khi chạy sau Render / Cloudflare / nginx
+app.set('trust proxy', 1);
+
 app.use(cors({
   origin: process.env.FRONTEND_URL || '*',
   credentials: true
@@ -62,67 +65,56 @@ app.use((req, res, next) => {
   next();
 });
 
-// ── Redirect HTTP → HTTPS ───────────────────────────────────
-app.use((req, res, next) => {
-  if (!req.secure && req.headers['x-forwarded-proto'] !== 'https') {
-    const host = req.headers.host?.replace(`:${PORT_HTTP}`, '') || 'casictask.local';
-    return res.redirect(301, `https://${host}${req.url}`);
-  }
-  next();
-});
-
 // ── API Routes ──────────────────────────────────────────────
 app.use('/api/auth',          authLimiter, authRoutes);
-app.use('/api/tasks',         apiLimiter, taskRoutes);
-app.use('/api/users',         apiLimiter, userRoutes);
-app.use('/api/events',        apiLimiter, eventRoutes);
-app.use('/api/stats',         apiLimiter, statsRoutes);
-app.use('/api/monthly-tasks', apiLimiter, monthlyTaskRoutes);
-app.use('/api/notifications', apiLimiter, notificationRoutes);
-app.use('/api/upload',        apiLimiter, uploadRoutes);
-app.use('/api/activity-logs', apiLimiter, activityLogRoutes);
-app.use('/api/task-templates',apiLimiter, taskTemplateRoutes);
-app.use('/api/payments',      apiLimiter, paymentRoutes);
-app.use('/api/departments',   apiLimiter, departmentRoutes);
+app.use('/api/tasks',         apiLimiter,  taskRoutes);
+app.use('/api/users',         apiLimiter,  userRoutes);
+app.use('/api/events',        apiLimiter,  eventRoutes);
+app.use('/api/stats',         apiLimiter,  statsRoutes);
+app.use('/api/monthly-tasks', apiLimiter,  monthlyTaskRoutes);
+app.use('/api/notifications', apiLimiter,  notificationRoutes);
+app.use('/api/upload',        apiLimiter,  uploadRoutes);
+app.use('/api/activity-logs', apiLimiter,  activityLogRoutes);
+app.use('/api/task-templates',apiLimiter,  taskTemplateRoutes);
+app.use('/api/payments',      apiLimiter,  paymentRoutes);
+app.use('/api/departments',   apiLimiter,  departmentRoutes);
 
-// ── Static files ────────────────────────────────────────────
+// ── Static uploads ──────────────────────────────────────────
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // ── Health check ────────────────────────────────────────────
 app.get('/api/health', async (req, res) => {
   try {
     await sequelize.authenticate();
-    res.json({
-      status:   'OK',
-      protocol: req.secure ? 'HTTPS ✅' : 'HTTP',
-      uptime:   Math.floor(process.uptime()) + 's'
-    });
-  } catch(e) {
+    res.json({ status: 'OK', db: 'PostgreSQL ✅', uptime: Math.floor(process.uptime()) + 's' });
+  } catch (e) {
     res.status(503).json({ status: 'ERROR', db: e.message });
   }
 });
 
-// ── Serve frontend ──────────────────────────────────────────
+// ── Serve frontend (production) ─────────────────────────────
 const frontendDist = path.join(__dirname, '../../frontend/dist');
-app.use(express.static(frontendDist));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendDist, 'index.html'));
-});
+if (fs.existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendDist, 'index.html'));
+  });
+}
 
 // ── Error handler ───────────────────────────────────────────
 app.use((err, req, res, next) => {
   const status = err.status || 500;
-  // Không lộ stack trace trong production
   const message = IS_PROD && status === 500 ? 'Lỗi máy chủ nội bộ' : err.message;
   if (!IS_PROD) console.error('[ERROR]', err.stack);
   res.status(status).json({ success: false, message });
 });
 
-// ── Khởi động server ────────────────────────────────────────
+// ── Khởi động ───────────────────────────────────────────────
 async function startServer() {
   try {
     await sequelize.authenticate();
-    console.log('✅ Database connected (SQL Server)');
+    console.log('✅ PostgreSQL connected');
+
     await sequelize.sync({ force: false, alter: false });
     console.log('✅ Database synced');
 
@@ -131,56 +123,38 @@ async function startServer() {
     const deptCount = await Department.count();
     if (deptCount === 0) {
       await Department.bulkCreate([
-        { code: 'KN-DMST',  name: 'KN&DMST',                color: '#ef4444' },
-        { code: 'HC-TH',    name: 'Hành chính tổng hợp',    color: '#f59e0b' },
-        { code: 'TT-TK',    name: 'Thông tin thống kê',      color: '#8b5cf6' },
-        { code: 'DV',       name: 'Dịch vụ',                 color: '#10b981' },
-        { code: 'BGD',      name: 'Ban Giám đốc',            color: '#0ea5e9' },
+        { code: 'KN-DMST', name: 'KN&DMST',             color: '#ef4444' },
+        { code: 'HC-TH',   name: 'Hành chính tổng hợp', color: '#f59e0b' },
+        { code: 'TT-TK',   name: 'Thông tin thống kê',   color: '#8b5cf6' },
+        { code: 'DV',      name: 'Dịch vụ',              color: '#10b981' },
+        { code: 'BGD',     name: 'Ban Giám đốc',         color: '#0ea5e9' },
       ]);
       console.log('✅ Seeded default departments');
     }
 
-    // ── Đọc SSL certificate ──
+    // ── HTTPS local (nếu có cert) ──
     const certsDir = path.join(__dirname, '../certs');
     const keyFile  = path.join(certsDir, 'server.key');
     const crtFile  = path.join(certsDir, 'server.crt');
 
-    if (fs.existsSync(keyFile) && fs.existsSync(crtFile)) {
-      // ── HTTPS server ──
+    if (!IS_PROD && fs.existsSync(keyFile) && fs.existsSync(crtFile)) {
       const sslOptions = {
         key:  fs.readFileSync(keyFile),
         cert: fs.readFileSync(crtFile),
       };
-
-      https.createServer(sslOptions, app).listen(PORT, '0.0.0.0', () => {
-        const localIP = getLocalIP();
-        console.log('\n🔒 CASIC Task chạy HTTPS tại:');
-        console.log(`   Máy chủ      : https://${DNS_DOMAIN}`);
-        console.log(`   Hoặc         : https://localhost`);
-        console.log(`   IP máy chủ   : ${localIP}`);
-        console.log('\n   ✅ Kết nối an toàn (HTTPS)');
-        console.log(`\n   📡 DNS Server: Cấu hình router DHCP → DNS = ${localIP}`);
-        console.log(`      Sau đó nhân viên gõ: https://${DNS_DOMAIN}\n`);
+      const httpsPort = parseInt(process.env.PORT_HTTPS) || 443;
+      https.createServer(sslOptions, app).listen(httpsPort, '0.0.0.0', () => {
+        console.log(`🔒 HTTPS local: https://localhost:${httpsPort}`);
       });
-
-      // ── HTTP redirect ──
       http.createServer((req, res) => {
-        const host = req.headers.host?.replace(':80', '') || DNS_DOMAIN;
-        res.writeHead(301, { Location: `https://${host}${req.url}` });
+        res.writeHead(301, { Location: `https://${req.headers.host}${req.url}` });
         res.end();
-      }).listen(PORT_HTTP, '0.0.0.0', () => {
-        console.log(`   HTTP :${PORT_HTTP} → redirect sang HTTPS tự động`);
-      });
-
-      // ── DNS server nội bộ ──
-      startDNS();
-
+      }).listen(parseInt(process.env.PORT_HTTP) || 80, '0.0.0.0');
     } else {
-      // ── Fallback: HTTP nếu không có cert ──
-      console.warn('⚠️  Không tìm thấy SSL cert — chạy HTTP (không an toàn)');
-      console.warn('   Chạy: node generate-cert.js để tạo cert\n');
+      // Render / production: HTTP (Render tự xử lý TLS)
       app.listen(PORT, '0.0.0.0', () => {
-        console.log('🚀 TaskMaster chạy HTTP tại: http://localhost:5000');
+        console.log(`🚀 Server running on port ${PORT}`);
+        if (IS_PROD) console.log('   Mode: production (Render)');
       });
     }
 

@@ -1,5 +1,5 @@
 /**
- * Script kiểm tra và khởi tạo database SQL Server
+ * Script kiểm tra và khởi tạo database PostgreSQL
  * Chạy: node backend/scripts/setup-db.js
  */
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
@@ -7,25 +7,26 @@ const { sequelize } = require('../src/database/connection');
 const { User, Department } = require('../src/models');
 
 async function setupDatabase() {
-  console.log('\n🔧 Đang kiểm tra kết nối SQL Server...');
-  console.log(`   Host    : ${process.env.DB_HOST}`);
-  console.log(`   Database: ${process.env.DB_NAME}`);
-  console.log(`   User    : ${process.env.DB_USER}`);
+  const dbUrl = process.env.DATABASE_URL || '';
+  // Ẩn password khi log
+  const safeUrl = dbUrl.replace(/:([^@]+)@/, ':****@');
+  console.log('\n🔧 Đang kiểm tra kết nối PostgreSQL...');
+  console.log(`   URL: ${safeUrl}\n`);
 
   try {
     await sequelize.authenticate();
-    console.log('✅ Kết nối SQL Server thành công!\n');
+    console.log('✅ Kết nối PostgreSQL thành công!\n');
   } catch (err) {
-    console.error('❌ Không thể kết nối SQL Server:', err.message);
+    console.error('❌ Không thể kết nối PostgreSQL:', err.message);
     console.error('\n   Kiểm tra lại:');
-    console.error('   1. SQL Server đang chạy?');
-    console.error('   2. DB_HOST trong .env đúng chưa?');
-    console.error('   3. Tài khoản sa có quyền truy cập?');
-    console.error('   4. SQL Server Authentication được bật?');
+    console.error('   1. DATABASE_URL trong .env đúng chưa?');
+    console.error('   2. PostgreSQL đang chạy?');
+    console.error('   3. Database đã được tạo chưa?');
+    console.error('   4. SSL: thêm DB_SSL=false nếu dùng local không có SSL');
     process.exit(1);
   }
 
-  console.log('🔧 Đang sync schema (tạo bảng nếu chưa có)...');
+  console.log('🔧 Đang sync schema...');
   try {
     await sequelize.sync({ force: false, alter: false });
     console.log('✅ Schema đã sẵn sàng\n');
@@ -34,7 +35,7 @@ async function setupDatabase() {
     process.exit(1);
   }
 
-  // Kiểm tra admin account
+  // Kiểm tra admin
   const adminExists = await User.findOne({ where: { role: 'admin' } });
   if (!adminExists) {
     console.log('⚠️  Chưa có tài khoản admin. Tạo tài khoản mặc định...');
@@ -66,7 +67,7 @@ async function setupDatabase() {
     console.log('✅ Tạo bộ phận mặc định thành công\n');
   }
 
-  console.log('🎉 Database setup hoàn tất! Có thể khởi động server.\n');
+  console.log('🎉 Database setup hoàn tất!\n');
   process.exit(0);
 }
 

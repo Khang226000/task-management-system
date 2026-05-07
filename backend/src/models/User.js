@@ -39,8 +39,7 @@ const User = sequelize.define('User', {
   },
   department: {
     type: DataTypes.STRING(50),
-    defaultValue: null,
-    comment: 'Bộ phận: KN&DMST, Hành chính, Truyền thông, Kỹ thuật...'
+    defaultValue: null
   },
   isActive: {
     type: DataTypes.BOOLEAN,
@@ -60,11 +59,11 @@ const User = sequelize.define('User', {
   }
 });
 
-User.prototype.comparePassword = async function(password) {
+User.prototype.comparePassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-User.prototype.toJSON = function() {
+User.prototype.toJSON = function () {
   const values = { ...this.get() };
   delete values.password;
   return values;

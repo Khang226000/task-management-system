@@ -13,14 +13,14 @@ const ACTION_LABELS = {
 /**
  * Ghi log hoạt động
  * @param {object} opts
- * @param {string} opts.action - create|update|delete|approve|reject|status_change|upload
- * @param {string} opts.entityType - task|monthly_task|event
+ * @param {string} opts.action
+ * @param {string} opts.entityType
  * @param {string} opts.entityId
- * @param {string} opts.entityCode - mã CV
- * @param {string} opts.entityName - tên CV
- * @param {string} opts.description - mô tả chi tiết
+ * @param {string} opts.entityCode
+ * @param {string} opts.entityName
+ * @param {string} opts.description
  * @param {string} opts.userId
- * @param {object} [opts.metadata] - dữ liệu thêm
+ * @param {object} [opts.metadata]
  */
 async function logActivity(opts) {
   try {
@@ -32,7 +32,7 @@ async function logActivity(opts) {
       entityName:  opts.entityName,
       description: opts.description,
       userId:      opts.userId,
-      metadata:    opts.metadata || null
+      metadata:    opts.metadata || null   // JSONB — truyền object trực tiếp
     });
   } catch (e) {
     // Không để lỗi log làm crash request chính

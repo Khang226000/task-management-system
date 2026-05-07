@@ -15,7 +15,7 @@ exports.getAll = async (req, res) => {
     if (department) where.department = department;
     if (status)     where.status     = status;
     if (assigneeId) where.assigneeId = assigneeId;
-    if (search)     where.name       = { [Op.like]: `%${search}%` };
+    if (search)     where.name       = { [Op.iLike]: `%${search}%` };
 
     const payments = await Payment.findAll({
       where, include,

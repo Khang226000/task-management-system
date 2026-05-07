@@ -9,13 +9,11 @@ const ActivityLog = sequelize.define('ActivityLog', {
   },
   action: {
     type: DataTypes.STRING(30),
-    allowNull: false,
-    comment: 'create | update | delete | approve | reject | status_change | upload'
+    allowNull: false
   },
   entityType: {
     type: DataTypes.STRING(20),
-    defaultValue: 'task',
-    comment: 'task | monthly_task | event | user'
+    defaultValue: 'task'
   },
   entityId: {
     type: DataTypes.STRING(50),
@@ -23,8 +21,7 @@ const ActivityLog = sequelize.define('ActivityLog', {
   },
   entityCode: {
     type: DataTypes.STRING(50),
-    defaultValue: null,
-    comment: 'Mã CV dễ đọc: ADM-01.01'
+    defaultValue: null
   },
   entityName: {
     type: DataTypes.STRING(500),
@@ -38,17 +35,10 @@ const ActivityLog = sequelize.define('ActivityLog', {
     type: DataTypes.UUID,
     allowNull: false
   },
+  // PostgreSQL JSONB thay vì TEXT serialize thủ công
   metadata: {
-    type: DataTypes.TEXT,
-    defaultValue: null,
-    comment: 'JSON extra data',
-    get() {
-      const v = this.getDataValue('metadata');
-      try { return v ? JSON.parse(v) : null; } catch { return null; }
-    },
-    set(val) {
-      this.setDataValue('metadata', val ? JSON.stringify(val) : null);
-    }
+    type: DataTypes.JSONB,
+    defaultValue: null
   }
 }, {
   tableName: 'activity_logs',

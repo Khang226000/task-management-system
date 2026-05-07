@@ -19,7 +19,7 @@ exports.getTasks = async (req, res) => {
     if (completion) where.completion = completion;
     if (taskType)   where.taskType   = taskType;
     if (assigneeId) where.assigneeId = assigneeId;
-    if (search)     where.taskName   = { [Op.like]: `%${search}%` };
+    if (search)     where.taskName   = { [Op.iLike]: `%${search}%` };
 
     const tasks = await MonthlyTask.findAll({
       where, include,
