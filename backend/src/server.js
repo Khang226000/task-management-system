@@ -51,7 +51,10 @@ app.use(compression());
 app.set('trust proxy', 1);
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: [
+    "http://localhost:5173",
+    "https://task-management-system-lilac-chi.vercel.app"
+  ],
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
