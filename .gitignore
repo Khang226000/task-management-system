@@ -1,0 +1,74 @@
+# ── Dependencies ────────────────────────────────────────────
+node_modules/
+*/node_modules/
+
+# ── Environment (KHÔNG bao giờ commit file .env thật) ───────
+.env
+backend/.env
+frontend/.env
+*.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local
+
+# ── Build output ─────────────────────────────────────────────
+frontend/dist/
+frontend/build/
+.vite/
+
+# ── Logs ─────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+backend/server.log
+backend/server-err.log
+backend/server-full.log
+backend/server-test.log
+
+# ── SSL Certificates (nhạy cảm) ──────────────────────────────
+backend/certs/server.key
+backend/certs/server.crt
+backend/certs/ca.crt
+
+# ── Database files (SQLite fallback) ─────────────────────────
+backend/data/*.db
+backend/data/*.db-shm
+backend/data/*.db-wal
+
+# ── Uploads (file người dùng — không commit) ─────────────────
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# ── OS files ─────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# ── Editor ───────────────────────────────────────────────────
+.vscode/settings.json
+.vscode/launch.json
+*.swp
+*.swo
+*.orig
+.idea/
+
+# ── Script tạm / debug ───────────────────────────────────────
+fix-*.js
+check-*.js
+fix-*.ps1
+test-*.js
+debug-*.js
+
+# ── Cloudflare binary ────────────────────────────────────────
+cloudflare/cloudflared.exe
+
+# ── Autostart scripts ────────────────────────────────────────
+taskmaster-autostart.vbs
+
+# ── npm / yarn cache ─────────────────────────────────────────
+.npm
+.yarn/cache
+.yarn/unplugged
+.pnp.*
