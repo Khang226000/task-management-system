@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 const { logActivity } = require('../utils/activityLogger');
@@ -19,7 +20,16 @@ exports.register = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Email đã được sử dụng' });
     }
 
-    const user = await User.create({ name, email, password, role: role || 'member' });
+    const bcrypt = require('bcrypt');
+
+const hashedPassword = await bcrypt.hash(password, 10);
+
+const user = await User.create({
+  name,
+  email,
+  password: hashedPassword,
+  role: role || 'member'
+});
     const token = generateToken(user);
 
     res.status(201).json({ success: true, data: { user, token } });
