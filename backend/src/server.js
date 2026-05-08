@@ -120,12 +120,14 @@ async function startServer() {
 
     await sequelize.sync({ force: false, alter: false });
     console.log('✅ Database synced');
-    if (process.env.SEED_ADMIN === 'true' && !IS_PROD) {
-  const bcrypt = require("bcryptjs");
-  const { User } = require('./models');
+   const bcrypt = require("bcryptjs");
+const { User } = require('./models');
+
+if (process.env.SEED_ADMIN === 'true') {
+  const email = process.env.ADMIN_EMAIL || "admin@qlcv.vn";
 
   let admin = await User.findOne({
-    where: { email: "admin@qlcv.vn" }
+    where: { email }
   });
 
   if (!admin) {
@@ -133,18 +135,18 @@ async function startServer() {
 
     await User.create({
       name: "Admin",
-      email: "admin@qlcv.vn",
+      email,
       password: hashedPassword,
       role: "admin"
     });
 
     console.log("✅ Seed admin created");
   } else {
-    admin.password = await bcrypt.hash("Admin@2024", 10);
-    await admin.save();
+  admin.password = await bcrypt.hash("Admin@2024", 10);
+  await admin.save();
 
-    console.log("🔄 Reset admin password");
-  }
+  console.log("🔄 Reset admin password");
+}
 }
     // Seed bộ phận mặc định nếu chưa có
     const { Department } = require('./models');
