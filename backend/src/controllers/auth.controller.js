@@ -50,10 +50,14 @@ exports.login = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Email hoặc mật khẩu không đúng' });
     }
 
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Email hoặc mật khẩu không đúng' });
-    }
+    const isMatch = await bcrypt.compare(password, user.password);
+
+if (!isMatch) {
+  return res.status(401).json({
+    success: false,
+    message: 'Email hoặc mật khẩu không đúng'
+  });
+}
 
     if (!user.isActive) {
       return res.status(403).json({ success: false, message: 'Tài khoản đã bị vô hiệu hóa' });
@@ -75,7 +79,10 @@ exports.changePassword = async (req, res) => {
     const { currentPassword, newPassword } = req.body;
     const user = await User.findByPk(req.user.id);
 
-    const isMatch = await user.comparePassword(currentPassword);
+    const isMatch = await bcrypt.compare(
+  currentPassword,
+  user.password
+);
     if (!isMatch) {
       return res.status(400).json({ success: false, message: 'Mật khẩu hiện tại không đúng' });
     }
