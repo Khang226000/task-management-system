@@ -120,7 +120,28 @@ async function startServer() {
 
     await sequelize.sync({ force: false, alter: false });
     console.log('✅ Database synced');
+    const bcrypt = require("bcrypt");
+const { User } = require('./models');
 
+// seed admin
+const admin = await User.findOne({
+  where: { email: "admin@qlcv.vn" }
+});
+
+if (!admin) {
+  const hashedPassword = await bcrypt.hash("Admin@2024", 10);
+
+  await User.create({
+    name: "Admin",
+    email: "admin@qlcv.vn",
+    password: hashedPassword,
+    role: "admin"
+  });
+
+  console.log("✅ Seed admin created");
+} else {
+  console.log("ℹ️ Admin already exists");
+}
     // Seed bộ phận mặc định nếu chưa có
     const { Department } = require('./models');
     const deptCount = await Department.count();
