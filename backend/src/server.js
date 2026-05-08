@@ -1,7 +1,5 @@
 require('dotenv').config();
 const express     = require('express');
-const https       = require('https');
-const http        = require('http');
 const cors        = require('cors');
 const path        = require('path');
 const fs          = require('fs');
@@ -23,7 +21,6 @@ const paymentRoutes      = require('./routes/payment.routes');
 const departmentRoutes   = require('./routes/department.routes');
 
 const app     = express();
-// Render inject PORT tự động; local fallback 5000
 const PORT    = parseInt(process.env.PORT) || 5000;
 const IS_PROD = process.env.NODE_ENV === 'production';
 
@@ -44,19 +41,31 @@ const authLimiter = rateLimit({
   message: { success: false, message: 'Quá nhiều lần đăng nhập, vui lòng thử lại sau 15 phút.' }
 });
 
-// ── Middleware ──────────────────────────────────────────────
-app.use(compression());
+// ── CORS ────────────────────────────────────────────────────
+// Hỗ trợ nhiều origin: local dev + Vercel production
+const allowedOrigins = (process.env.FRONTEND_URL || '')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean);
 
-// Trust proxy — bắt buộc khi chạy sau Render / Cloudflare / nginx
-app.set('trust proxy', 1);
+// Luôn cho phép localhost khi dev
+if (!IS_PROD) {
+  allowedOrigins.push('http://localhost:5173', 'http://localhost:3000');
+}
 
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://task-management-system-lilac-chi.vercel.app"
-  ],
+  origin: (origin, callback) => {
+    // Cho phép requests không có origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS blocked: ${origin}`));
+  },
   credentials: true
 }));
+
+// ── Middleware ──────────────────────────────────────────────
+app.use(compression());
+app.set('trust proxy', 1); // Bắt buộc cho Render / Vercel / Cloudflare
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -94,8 +103,17 @@ app.get('/api/health', async (req, res) => {
     res.status(503).json({ status: 'ERROR', db: e.message });
   }
 });
+app.get("/debug/admin", async (req, res) => {
+  const { User } = require("./models");
+  const admin = await User.findOne({ where: { email: "admin@qlcv.vn" } });
 
-// ── Serve frontend (production) ─────────────────────────────
+  res.json({
+    exists: !!admin,
+    role: admin?.role,
+    password: admin?.password
+  });
+});
+// ── Serve frontend nếu có dist (monorepo deploy) ────────────
 const frontendDist = path.join(__dirname, '../../frontend/dist');
 if (fs.existsSync(frontendDist)) {
   app.use(express.static(frontendDist));
@@ -111,87 +129,69 @@ app.use((err, req, res, next) => {
   if (!IS_PROD) console.error('[ERROR]', err.stack);
   res.status(status).json({ success: false, message });
 });
-app.get("/debug/users", async (req, res) => {
-  const { User } = require("./models");
-  const users = await User.findAll({
-    attributes: ["id", "email", "role", "password"]
-  });
-  res.json(users);
-});
+
+// ── Seed dữ liệu mặc định ───────────────────────────────────
+const bcrypt = require('bcryptjs');
+
+async function seedDefaults() {
+  const { User, Department } = require('./models');
+
+  const email = 'admin@qlcv.vn';
+  const passwordPlain = 'Admin@2026';
+
+  const admin = await User.findOne({ where: { email } });
+
+  const hashed = await bcrypt.hash(passwordPlain, 10);
+
+  if (!admin) {
+    await User.create({
+      name: 'Admin',
+      email,
+      password: hashed,
+      role: 'admin',
+      color: '#6366f1'
+    });
+
+    console.log('🔥 Admin CREATED:', email);
+  } else {
+    await admin.update({
+      password: hashed,
+      role: 'admin'
+    });
+
+    console.log('♻️ Admin UPDATED:', email);
+  }
+
+  const deptCount = await Department.count();
+  if (deptCount === 0) {
+    await Department.bulkCreate([
+      { code: 'KN-DMST', name: 'KN&DMST', color: '#ef4444' },
+      { code: 'HC-TH', name: 'Hành chính tổng hợp', color: '#f59e0b' },
+      { code: 'TT-TK', name: 'Thông tin thống kê', color: '#8b5cf6' },
+      { code: 'DV', name: 'Dịch vụ', color: '#10b981' },
+      { code: 'BGD', name: 'Ban Giám đốc', color: '#0ea5e9' },
+    ]);
+  }
+}
+
 // ── Khởi động ───────────────────────────────────────────────
 async function startServer() {
   try {
     await sequelize.authenticate();
     console.log('✅ PostgreSQL connected');
 
+    // alter: false — không tự sửa schema đang có dữ liệu
     await sequelize.sync({ force: false, alter: false });
     console.log('✅ Database synced');
-  
-  if (process.env.SEED_ADMIN === 'true') {
-  const bcrypt = require("bcryptjs");
-const { User } = require("./models");
 
-const email = process.env.ADMIN_EMAIL || "admin@qlcv.vn";
-const passwordPlain = "Admin@2026";
+    await seedDefaults();
 
-const hashedPassword = await bcrypt.hash(passwordPlain, 10);
-
-// XÓA + TẠO lại
-await User.destroy({ where: { email } });
-
-const admin = await User.create({
-  name: "Admin",
-  email,
-  password: hashedPassword,
-  role: "admin"
-});
-
-console.log("🔥 ADMIN CREATED:");
-console.log("EMAIL:", admin.email);
-console.log("ROLE:", admin.role);
-console.log("PASSWORD RAW:", passwordPlain);
-    // Seed bộ phận mặc định nếu chưa có
-    const { Department } = require('./models');
-    const deptCount = await Department.count();
-    if (deptCount === 0) {
-      await Department.bulkCreate([
-        { code: 'KN-DMST', name: 'KN&DMST',             color: '#ef4444' },
-        { code: 'HC-TH',   name: 'Hành chính tổng hợp', color: '#f59e0b' },
-        { code: 'TT-TK',   name: 'Thông tin thống kê',   color: '#8b5cf6' },
-        { code: 'DV',      name: 'Dịch vụ',              color: '#10b981' },
-        { code: 'BGD',     name: 'Ban Giám đốc',         color: '#0ea5e9' },
-      ]);
-      console.log('✅ Seeded default departments');
-    }
-
-    // ── HTTPS local (nếu có cert) ──
-    const certsDir = path.join(__dirname, '../certs');
-    const keyFile  = path.join(certsDir, 'server.key');
-    const crtFile  = path.join(certsDir, 'server.crt');
-
-    if (!IS_PROD && fs.existsSync(keyFile) && fs.existsSync(crtFile)) {
-      const sslOptions = {
-        key:  fs.readFileSync(keyFile),
-        cert: fs.readFileSync(crtFile),
-      };
-      const httpsPort = parseInt(process.env.PORT_HTTPS) || 443;
-      https.createServer(sslOptions, app).listen(httpsPort, '0.0.0.0', () => {
-        console.log(`🔒 HTTPS local: https://localhost:${httpsPort}`);
-      });
-      http.createServer((req, res) => {
-        res.writeHead(301, { Location: `https://${req.headers.host}${req.url}` });
-        res.end();
-      }).listen(parseInt(process.env.PORT_HTTP) || 80, '0.0.0.0');
-    } else {
-      // Render / production: HTTP (Render tự xử lý TLS)
-      app.listen(PORT, '0.0.0.0', () => {
-        console.log(`🚀 Server running on port ${PORT}`);
-        if (IS_PROD) console.log('   Mode: production (Render)');
-      });
-    }
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Server running on port ${PORT} [${IS_PROD ? 'production' : 'development'}]`);
+    });
 
   } catch (error) {
-    console.error('❌ Không thể khởi động:', error.message);
+    console.error('❌ Startup failed:', error.message);
     process.exit(1);
   }
 }
