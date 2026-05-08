@@ -128,9 +128,16 @@ async function startServer() {
   const hashedPassword = await bcrypt.hash("Admin@2026", 10);
 
   // ❗ XÓA luôn admin cũ
-  await User.destroy({ where: { email } });
+  const admin = await User.findOne({ where: { email } });
 
-  // TẠO lại admin mới
+if (admin) {
+  admin.password = hashedPassword;
+  admin.role = "admin";
+  admin.name = "Admin";
+  await admin.save();
+
+  console.log("🔄 Reset admin password DONE");
+} else {
   await User.create({
     name: "Admin",
     email,
@@ -138,8 +145,9 @@ async function startServer() {
     role: "admin"
   });
 
-  console.log("🔥 FORCE RESET ADMIN DONE");
+  console.log("✅ Created admin");
 }
+   }
     // Seed bộ phận mặc định nếu chưa có
     const { Department } = require('./models');
     const deptCount = await Department.count();
