@@ -25,9 +25,7 @@ if (email === process.env.ADMIN_EMAIL) {
       return res.status(400).json({ success: false, message: 'Email đã được sử dụng' });
     }
 
-    const bcrypt = require('bcrypt');
-
-const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
 const user = await User.create({
   name,
@@ -82,8 +80,9 @@ exports.changePassword = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Mật khẩu hiện tại không đúng' });
     }
 
-    user.password = newPassword;
-    await user.save();
+    const hashed = await bcrypt.hash(newPassword, 10);
+user.password = hashed;
+await user.save();
 
     await logActivity({
       action: 'update',
