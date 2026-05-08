@@ -1,0 +1,29 @@
+services:
+  # ── Backend Web Service ──────────────────────────────────
+  - type: web
+    name: casic-task-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install --omit=dev && cd ../frontend && npm install && npm run build
+    startCommand: node src/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: casic-task-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 30d
+      - key: FRONTEND_URL
+        value: https://casic-task-backend.onrender.com
+    healthCheckPath: /api/health
+
+# ── PostgreSQL Database ──────────────────────────────────
+databases:
+  - name: casic-task-db
+    databaseName: qlcv_db
+    user: qlcv_user
+    plan: free

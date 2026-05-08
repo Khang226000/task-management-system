@@ -1,0 +1,74 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🚀 Khởi động Server (HTTPS)",
+      "type": "shell",
+      "command": "node src/server.js",
+      "options": {
+        "cwd": "${workspaceFolder}/backend",
+        "env": {
+          "NODE_ENV": "production"
+        }
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true,
+        "showReuseMessage": false
+      },
+      "problemMatcher": [],
+      "detail": "Chạy server HTTPS tại https://casictask.local (cần quyền Admin)"
+    },
+    {
+      "label": "🔨 Build Frontend",
+      "type": "shell",
+      "command": "npx vite build",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend",
+        "env": {
+          "NODE_OPTIONS": "--max-old-space-size=4096"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Build frontend production vào dist/"
+    },
+    {
+      "label": "🔨 Build + Khởi động",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "🔨 Build Frontend",
+        "🚀 Khởi động Server (HTTPS)"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "detail": "Build frontend rồi khởi động server"
+    },
+    {
+      "label": "🛑 Dừng Server",
+      "type": "shell",
+      "command": "Stop-Process -Name node -Force -ErrorAction SilentlyContinue; Write-Host 'Server đã dừng'",
+      "options": {
+        "shell": {
+          "executable": "powershell.exe",
+          "args": ["-Command"]
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": [],
+      "detail": "Dừng tất cả Node.js processes"
+    }
+  ]
+}
