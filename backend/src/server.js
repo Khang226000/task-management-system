@@ -53,10 +53,11 @@ app.set('trust proxy', 1);
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://task-management-system-lilac-chi.vercel.app"
+    "https://task-management-system-lilac-chi.vercel.app",
+    "https://YOUR-BACKEND.onrender.com"
   ],
   credentials: true
-}));
+});
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
