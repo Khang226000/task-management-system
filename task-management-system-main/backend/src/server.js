@@ -51,11 +51,20 @@ const authLimiter = rateLimit({
 app.use(compression());
 app.set('trust proxy', 1);
 
+const corsOrigins = new Set([
+  'http://localhost:5173',
+]);
+
+if (process.env.FRONTEND_URL) corsOrigins.add(process.env.FRONTEND_URL);
+
+// fallback: allow anything that matches /render.com or /vercel.app if FRONTEND_URL is not set
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://task-management-system-lilac-chi.vercel.app"
-  ],
+  origin: (origin, cb) => {
+    if (!origin) return cb(null, true);
+    if (corsOrigins.has(origin)) return cb(null, true);
+    const isAllowed = /\.render\.com$/.test(origin) || /\.vercel\.app$/.test(origin);
+    return cb(isAllowed ? null : new Error('Not allowed by CORS'), isAllowed);
+  },
   credentials: true
 }));
 

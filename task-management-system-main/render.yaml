@@ -19,6 +19,14 @@ services:
         value: 30d
       - key: FRONTEND_URL
         value: https://casic-task-backend.onrender.com
+      - key: SEED_ADMIN
+        value: 'true'
+      - key: ADMIN_EMAIL
+        value: admin@qlcv.vn
+      - key: ADMIN_PASSWORD
+        value: Admin@2024
+      - key: VITE_API_URL
+        value: https://casic-task-backend.onrender.com
     healthCheckPath: /api/health
 
 # ── PostgreSQL Database ──────────────────────────────────

@@ -1,12 +1,13 @@
-# TODO - Fix login đăng nhập không được
+# TODO - Deploy Vercel (fix failing)
 
-- [x] Tìm nguyên nhân: password bị hash 2 lần (controller + model hooks)
-- [x] Sửa `backend/src/controllers/auth.controller.js`: gỡ hash khi register + changePassword, để hook ở model xử lý
-- [x] Sửa indentation/comment cho đúng logic
-- [ ] Chạy lại backend local và test flow:
-  - [ ] register -> login đúng mật khẩu
-  - [ ] login với admin seed (admin@qlcv.vn / Admin@2024) nếu cần
-- [ ] Tạo/seed tài khoản admin trước khi deploy để có thể đăng nhập vào tab admin
-- [ ] Deploy lại backend lên Render, sau đó verify frontend login trên Vercel
+## Mục tiêu
+Deploy lại thành công trên Vercel sau khi bị lỗi build/runtime.
 
+## Checklist
+- [x] Lấy log failing từ Vercel bằng lệnh `npx vercel inspect ... --logs`
+- [x] Sửa Project Settings trên Vercel: Root Directory đúng cho “full stack” (repo có subfolder `task-management-system-main/`)
+
+- [ ] Cập nhật build/start (nếu Vercel hiện đang coi như frontend-only)
+- [ ] Push commit mới (không chỉ force push y chang) để Vercel chạy lại pipeline
+- [ ] Chờ deploy pass và kiểm tra URL/api health
 
