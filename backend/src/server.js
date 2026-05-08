@@ -7,10 +7,9 @@ const path = require('path');
 const fs = require('fs');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
-const bcrypt = require('bcryptjs');
 
 const { sequelize } = require('./database/connection');
-const { User, Department } = require('./models');
+const { Department } = require('./models');
 
 // Routes
 const authRoutes = require('./routes/auth.routes');
@@ -30,7 +29,7 @@ const app = express();
 const PORT = parseInt(process.env.PORT) || 5000;
 const IS_PROD = process.env.NODE_ENV === 'production';
 
-// ── Rate Limiting ───────────────────────────────────────────
+// ── Rate limiting ───────────────────────────────────────────
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 500,
@@ -84,10 +83,10 @@ app.use('/api/task-templates',apiLimiter,  taskTemplateRoutes);
 app.use('/api/payments',      apiLimiter,  paymentRoutes);
 app.use('/api/departments',   apiLimiter,  departmentRoutes);
 
-// ── Static Files ────────────────────────────────────────────
+// Static uploads
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// Health check
+// ── Health check ────────────────────────────────────────────
 app.get('/api/health', async (req, res) => {
   try {
     await sequelize.authenticate();
@@ -101,18 +100,19 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
-// Serve frontend (production)
+// ── Serve frontend (production) ─────────────────────────────
 const frontendDist = path.join(__dirname, '../../frontend/dist');
 if (fs.existsSync(frontendDist)) {
   app.use(express.static(frontendDist));
   app.get('*', (req, res) => {
+    // Chỉ trả về index.html nếu không phải là request vào /api
     if (!req.path.startsWith('/api')) {
       res.sendFile(path.join(frontendDist, 'index.html'));
     }
   });
 }
 
-// ── Error Handler ───────────────────────────────────────────
+// ── Error handler ───────────────────────────────────────────
 app.use((err, req, res, next) => {
   const status = err.status || 500;
   const message = IS_PROD && status === 500 ? 'Lỗi máy chủ nội bộ' : err.message;
@@ -120,35 +120,17 @@ app.use((err, req, res, next) => {
   res.status(status).json({ success: false, message });
 });
 
-// ── Server Startup ──────────────────────────────────────────
+// ── Khởi động ───────────────────────────────────────────────
 async function startServer() {
   try {
-    // 1. Database Connection & Sync
+    // Kết nối và đồng bộ Database
     await sequelize.authenticate();
     console.log('✅ PostgreSQL connected');
-    
+
     await sequelize.sync({ force: false, alter: false });
     console.log('✅ Database synced');
 
-    // 2. Seed Admin User
-    if (process.env.SEED_ADMIN === 'true') {
-      const adminEmail = "admin@qlcv.vn";
-      const admin = await User.findOne({ where: { email: adminEmail } });
-      if (!admin) {
-        const hashedPassword = await bcrypt.hash("Admin@2024", 10);
-        await User.create({
-          name: "Admin",
-          email: adminEmail,
-          password: hashedPassword,
-          role: "admin"
-        });
-        console.log("✅ Seed admin created");
-      } else {
-        console.log("ℹ️ Admin already exists");
-      }
-    }
-
-    // 3. Seed Departments
+    // Seed bộ phận mặc định nếu chưa có
     const deptCount = await Department.count();
     if (deptCount === 0) {
       await Department.bulkCreate([
@@ -161,13 +143,12 @@ async function startServer() {
       console.log('✅ Seeded default departments');
     }
 
-    // 4. Start Listening
+    // Thiết lập giao thức (HTTPS local hoặc HTTP production)
     const certsDir = path.join(__dirname, '../certs');
     const keyFile  = path.join(certsDir, 'server.key');
     const crtFile  = path.join(certsDir, 'server.crt');
 
     if (!IS_PROD && fs.existsSync(keyFile) && fs.existsSync(crtFile)) {
-      // Local HTTPS
       const sslOptions = {
         key:  fs.readFileSync(keyFile),
         cert: fs.readFileSync(crtFile),
@@ -178,14 +159,14 @@ async function startServer() {
         console.log(`🔒 HTTPS local: https://localhost:${httpsPort}`);
       });
 
-      // Redirect HTTP to HTTPS
+      // Redirect HTTP sang HTTPS ở local
       http.createServer((req, res) => {
         res.writeHead(301, { Location: `https://${req.headers.host}${req.url}` });
         res.end();
       }).listen(parseInt(process.env.PORT_HTTP) || 80, '0.0.0.0');
       
     } else {
-      // Production (Render/Cloud)
+      // Render / Production: Node chỉ cần nghe cổng HTTP, TLS do hạ tầng xử lý
       app.listen(PORT, '0.0.0.0', () => {
         console.log(`🚀 Server running on port ${PORT}`);
         if (IS_PROD) console.log('   Mode: production (Render)');
