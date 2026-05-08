@@ -111,7 +111,13 @@ app.use((err, req, res, next) => {
   if (!IS_PROD) console.error('[ERROR]', err.stack);
   res.status(status).json({ success: false, message });
 });
-
+app.get("/debug/users", async (req, res) => {
+  const { User } = require("./models");
+  const users = await User.findAll({
+    attributes: ["id", "email", "role", "password"]
+  });
+  res.json(users);
+});
 // ── Khởi động ───────────────────────────────────────────────
 async function startServer() {
   try {
@@ -120,34 +126,30 @@ async function startServer() {
 
     await sequelize.sync({ force: false, alter: false });
     console.log('✅ Database synced');
-   if (process.env.SEED_ADMIN === 'true') {
+  
+  if (process.env.SEED_ADMIN === 'true') {
   const bcrypt = require("bcryptjs");
-  const { User } = require('./models');
+const { User } = require("./models");
 
-  const email = process.env.ADMIN_EMAIL || "admin@qlcv.vn";
-  const hashedPassword = await bcrypt.hash("Admin@2026", 10);
+const email = process.env.ADMIN_EMAIL || "admin@qlcv.vn";
+const passwordPlain = "Admin@2026";
 
-  // ❗ XÓA luôn admin cũ
-  const admin = await User.findOne({ where: { email } });
+const hashedPassword = await bcrypt.hash(passwordPlain, 10);
 
-if (admin) {
-  admin.password = hashedPassword;
-  admin.role = "admin";
-  admin.name = "Admin";
-  await admin.save();
+// XÓA + TẠO lại
+await User.destroy({ where: { email } });
 
-  console.log("🔄 Reset admin password DONE");
-} else {
-  await User.create({
-    name: "Admin",
-    email,
-    password: hashedPassword,
-    role: "admin"
-  });
+const admin = await User.create({
+  name: "Admin",
+  email,
+  password: hashedPassword,
+  role: "admin"
+});
 
-  console.log("✅ Created admin");
-}
-   }
+console.log("🔥 ADMIN CREATED:");
+console.log("EMAIL:", admin.email);
+console.log("ROLE:", admin.role);
+console.log("PASSWORD RAW:", passwordPlain);
     // Seed bộ phận mặc định nếu chưa có
     const { Department } = require('./models');
     const deptCount = await Department.count();
