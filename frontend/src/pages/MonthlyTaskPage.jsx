@@ -388,7 +388,7 @@ export default function MonthlyTaskPage() {
             Quản lý công việc hằng tháng
           </h2>
           <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>
-            Theo dõi tiến độ công việc thờng xuyên v phát sinh
+            Theo dõi tiến độ công việc thuờng xuyên và phát sinh
           </p>
         </div>
         <button className="btn btn-primary" onClick={openCreate}>
@@ -396,13 +396,13 @@ export default function MonthlyTaskPage() {
         </button>
       </div>
 
-      {/* B" lọc — thng/nm nằm trong ệy */}
+      {/* Bộ lọc — tháng/năm nằm trong ệy */}
       <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap', padding:'10px 14px', backgroundColor:'var(--bg-surface)', borderRadius:12, border:'1.5px solid var(--border)' }}>
         <div style={{ display:'flex', alignItems:'center', gap:5, fontSize:12, color:'var(--text-muted)', marginRight:4 }}>
           <Filter size={13}/> <span style={{ fontWeight:700 }}>Lọc:</span>
         </div>
 
-        {/* Tháng / Nm */}
+        {/* Tháng / Năm */}
         <select className="select" style={{ width:120, fontSize:12, padding:'5px 10px' }}
           value={month} onChange={e => setMonth(parseInt(e.target.value))}>
           {MONTHS.map((m, i) => <option key={i+1} value={i+1}>{m}</option>)}
