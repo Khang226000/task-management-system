@@ -164,6 +164,9 @@ exports.createTask = async (req, res) => {
     for (const k of allowed) {
       if (req.body[k] !== undefined) body[k] = req.body[k];
     }
+    const now = new Date();
+    if (!body.month) body.month = now.getMonth() + 1;
+    if (!body.year) body.year = now.getFullYear();
     for (const df of ['startDate','deadline','extendedDeadline']) {
       if (body[df] === '' || body[df] === 'Invalid Date') body[df] = null;
     }
