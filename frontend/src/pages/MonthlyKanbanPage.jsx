@@ -342,7 +342,7 @@ function EditModal({ task, users, month, year, onClose, onSaved }) {
           borderBottom: '1px solid var(--border)',
         }}>
           <h3 style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-            Ch�0nh sửa c�ng vi�!c
+            Chỉnh sửa công việc
           </h3>
           <button
             onClick={onClose}
