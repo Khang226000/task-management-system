@@ -10,19 +10,19 @@ import { showConfirm } from '../utils/confirm';
 
 // ������ Column definitions ��������������������������������������������������������������������������������������������������������������
 const COLUMNS = [
-  { key: 'not_started', label: 'Ch�a bắt �ầu',   headerBg: '#475569', borderColor: '#475569' },
-  { key: 'in_progress', label: 'ang thực hi�!n',  headerBg: '#d97706', borderColor: '#d97706' },
-  { key: 'done',        label: 'Ho�n th�nh',       headerBg: '#059669', borderColor: '#059669' },
-  { key: 'delayed',     label: 'Tr�& / Kh�ng HT',   headerBg: '#dc2626', borderColor: '#dc2626' },
+  { key: 'not_started', label: 'Chưa bắt đầu',   headerBg: '#475569', borderColor: '#475569' },
+  { key: 'in_progress', label: 'Đang thực hiện',  headerBg: '#d97706', borderColor: '#d97706' },
+  { key: 'done',        label: 'Hoàn thành',       headerBg: '#059669', borderColor: '#059669' },
+  { key: 'delayed',     label: 'Trễ hạn / Không HT',   headerBg: '#dc2626', borderColor: '#dc2626' },
 ];
 
 const DEPT_OPTIONS = [
   'KN&DMST',
-  'H�nh ch�nh',
-  'Truyền th�ng',
+  'Hành chính',
+  'Truyền thông',
   'Thông tin thống kê',
-  'D�9ch vụ',
-  'Ban Gi�m ��c',
+  'Dịch vụ',
+  'Ban Giám đốc',
 ];
 
 // ������ Helpers ������������������������������������������������������������������������������������������������������������������������������������
@@ -63,7 +63,7 @@ function deadlineBadge(task) {
   const diffDays = Math.ceil((due - today) / 86400000);
 
   if (diffDays < 0)   return { bg: '#dc262620', color: '#dc2626', border: '#dc262640', label: fmtDate(effectiveDue) };
-  if (diffDays === 0) return { bg: '#ef444420', color: '#ef4444', border: '#ef444440', label: 'H�m nay' };
+  if (diffDays === 0) return { bg: '#ef444420', color: '#ef4444', border: '#ef444440', label: 'Hôm nay' };
   if (diffDays <= 3)  return { bg: '#f9731620', color: '#f97316', border: '#f9731640', label: fmtDate(effectiveDue) };
   return { bg: '#05966920', color: '#059669', border: '#05966940', label: fmtDate(effectiveDue) };
 }
@@ -308,7 +308,7 @@ function EditModal({ task, users, month, year, onClose, onSaved }) {
   };
 
   const handleDeleteFile = async (filename) => {
-    const ok = await showConfirm({ title: 'X�a file', message: 'X�a file n�y?', confirmLabel: 'X�a' });
+    const ok = await showConfirm({ title: 'Xóa file', message: 'Xóa file này?', confirmLabel: 'Xóa' });
     if (!ok) return;
     try {
       await api.delete(`/upload/monthly/${task.id}/${filename}`);
@@ -368,30 +368,30 @@ function EditModal({ task, users, month, year, onClose, onSaved }) {
               />
             </div>
             <div>
-              <label style={labelStyle}>Nh�m nhi�!m vụ</label>
+              <label style={labelStyle}>Nhóm nhiệm vụ</label>
               <select className="select" value={form.taskGroup} onChange={e => s('taskGroup', e.target.value)}>
-                <option value="THUONG_XUYEN">Th�ờng xuy�n</option>
-                <option value="PHAT_SINH">Ph�t sinh</option>
+                <option value="THUONG_XUYEN">Thường xuyên</option>
+                <option value="PHAT_SINH">Phát sinh</option>
               </select>
             </div>
           </div>
 
           {/* Task name */}
           <div>
-            <label style={labelStyle}>T�n c�ng vi�!c *</label>
+            <label style={labelStyle}>Tên công việc *</label>
             <input
               className="input"
               required
               value={form.taskName}
               onChange={e => s('taskName', e.target.value)}
-              placeholder="Nhập t�n c�ng vi�!c..."
+              placeholder="Nhập tên công việc..."
             />
           </div>
 
           {/* Dates */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
             <div>
-              <label style={labelStyle}>Ng�y bắt �ầu</label>
+              <label style={labelStyle}>Ngày bắt đầu</label>
               <input
                 type="date"
                 className="input"
@@ -400,7 +400,7 @@ function EditModal({ task, users, month, year, onClose, onSaved }) {
               />
             </div>
             <div>
-              <label style={labelStyle}>Ng�y kết th�c *</label>
+              <label style={labelStyle}>Ngày kết thúc *</label>
               <input
                 type="date"
                 className="input"
@@ -423,7 +423,7 @@ function EditModal({ task, users, month, year, onClose, onSaved }) {
           {/* Assignee + Department */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div>
-              <label style={labelStyle}>Ng�ời thực hi�!n</label>
+              <label style={labelStyle}>Người thực hiệnn</label>
               <select
                 className="select"
                 value={form.assigneeId}
@@ -438,13 +438,13 @@ function EditModal({ task, users, month, year, onClose, onSaved }) {
               </select>
             </div>
             <div>
-              <label style={labelStyle}>B�" phận</label>
+              <label style={labelStyle}>Bộ phận</label>
               <select
                 className="select"
                 value={form.department}
                 onChange={e => s('department', e.target.value)}
               >
-                <option value="">-- Chọn b�" phận --</option>
+                <option value="">-- Chọn bộ phận --</option>
                 {DEPT_OPTIONS.map(d => <option key={d} value={d}>{d}</option>)}
               </select>
             </div>
@@ -455,21 +455,21 @@ function EditModal({ task, users, month, year, onClose, onSaved }) {
             <div>
               <label style={labelStyle}>Loại (R/A)</label>
               <select className="select" value={form.taskType} onChange={e => s('taskType', e.target.value)}>
-                <option value="R">R � Th�ờng xuy�n</option>
-                <option value="A">A � Ph�t sinh</option>
+                <option value="R">R - Thường xuyên</option>
+                <option value="A">A - Phát sinh</option>
               </select>
             </div>
             <div>
-              <label style={labelStyle}>Ho�n th�nh</label>
+              <label style={labelStyle}>Hoàn thành</label>
               <select className="select" value={form.completion} onChange={e => s('completion', e.target.value)}>
-                <option value="">� Ch�a x�c ��9nh</option>
-                <option value="OT">OT � �ng hạn</option>
-                <option value="OD">OD � Tr�& hạn</option>
-                <option value="IC">IC � Kh�ng HT</option>
+                <option value="">Chưa xác định</option>
+                <option value="OT">OT - đúng hạn</option>
+                <option value="OD">OD - Trễ hạn</option>
+                <option value="IC">IC - Không HT</option>
               </select>
             </div>
             <div>
-              <label style={labelStyle}>Tiến ��": {form.progress}%</label>
+              <label style={labelStyle}>Tiến độ": {form.progress}%</label>
               <input
                 type="range"
                 min="0"
@@ -484,7 +484,7 @@ function EditModal({ task, users, month, year, onClose, onSaved }) {
 
           {/* Notes */}
           <div>
-            <label style={labelStyle}>Ghi ch�</label>
+            <label style={labelStyle}>Ghi chú</label>
             <textarea
               className="input"
               rows={2}
@@ -500,7 +500,7 @@ function EditModal({ task, users, month, year, onClose, onSaved }) {
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <Paperclip size={13} style={{ color: 'var(--text-muted)' }}/>
                 <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)' }}>
-                  Kết quả �ầu ra / T�i li�!u ��nh k�m
+                  Kết quả đầu ra / Tài liệu đính kèm
                 </span>
                 {attachments.length > 0 && (
                   <span style={{ fontSize: 10, padding: '1px 6px', borderRadius: 8, backgroundColor: '#0ea5e920', color: '#0ea5e9', fontWeight: 800 }}>
@@ -517,7 +517,7 @@ function EditModal({ task, users, month, year, onClose, onSaved }) {
               }}>
                 {uploading
                   ? <><span style={{ width: 12, height: 12, border: '2px solid rgba(14,165,233,0.3)', borderTopColor: '#0ea5e9', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}/> ang tải...</>
-                  : <><Upload size={12}/> �nh k�m file</>
+                  : <><Upload size={12}/> đính kèm file</>
                 }
                 <input type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
                   onChange={handleUpload} disabled={uploading} style={{ display: 'none' }}/>
@@ -534,7 +534,7 @@ function EditModal({ task, users, month, year, onClose, onSaved }) {
             <button type="submit" className="btn btn-primary" disabled={saving}
               style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <Save size={15} />
-              {saving ? 'ang l�u...' : 'L�u'}
+              {saving ? 'Đang lưu...' : 'Lưu'}
             </button>
           </div>
         </form>
@@ -666,7 +666,7 @@ export default function MonthlyKanbanPage() {
           value={filterDepartment}
           onChange={e => setFilterDepartment(e.target.value)}
         >
-          <option value="">Tất cả b�" phận</option>
+          <option value="">Tất cả bộ phận</option>
           {DEPT_OPTIONS.map(d => <option key={d} value={d}>{d}</option>)}
         </select>
 
@@ -677,7 +677,7 @@ export default function MonthlyKanbanPage() {
           value={filterAssignee}
           onChange={e => setFilterAssignee(e.target.value)}
         >
-          <option value="">Tất cả ng�ời thực hi�!n</option>
+          <option value="">Tất cả người thực hiện</option>
           {users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
         </select>
 
@@ -688,9 +688,9 @@ export default function MonthlyKanbanPage() {
           value={filterGroup}
           onChange={e => setFilterGroup(e.target.value)}
         >
-          <option value="">Tất cả nh�m</option>
-          <option value="THUONG_XUYEN">Th�ờng xuy�n</option>
-          <option value="PHAT_SINH">Ph�t sinh</option>
+          <option value="">Tất cả nhóm</option>
+          <option value="THUONG_XUYEN">Thường xuyên</option>
+          <option value="PHAT_SINH">Phát sinh</option>
         </select>
 
         {/* Type */}
@@ -701,8 +701,8 @@ export default function MonthlyKanbanPage() {
           onChange={e => setFilterType(e.target.value)}
         >
           <option value="">Tất cả loại</option>
-          <option value="R">R � Th�ờng xuy�n</option>
-          <option value="A">A � Ph�t sinh</option>
+          <option value="R">R - Thường xuyên</option>
+          <option value="A">A - Phát sinh</option>
         </select>
 
         {/* Completion */}
@@ -712,10 +712,10 @@ export default function MonthlyKanbanPage() {
           value={filterCompletion}
           onChange={e => setFilterCompletion(e.target.value)}
         >
-          <option value="">Tất cả ho�n th�nh</option>
-          <option value="OT">OT � �ng hạn</option>
-          <option value="OD">OD � Tr�& hạn</option>
-          <option value="IC">IC � Kh�ng HT</option>
+          <option value="">Tất cả hoàn nh</option>
+          <option value="OT">OT - đúng hạn</option>
+          <option value="OD">OD - Trễ hạn</option>
+          <option value="IC">IC - Không HT</option>
         </select>
 
         {hasFilter && (
@@ -731,12 +731,12 @@ export default function MonthlyKanbanPage() {
               cursor: 'pointer',
             }}
           >
-            �S" X�a lọc
+             Xóa lọc
           </button>
         )}
 
         <span style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--text-muted)' }}>
-          {tasks.length} c�ng vi�!c
+          {tasks.length} công việc
         </span>
       </div>
 
