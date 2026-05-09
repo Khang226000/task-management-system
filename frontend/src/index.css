@@ -536,3 +536,19 @@ tr:hover .app-table-td {
     opacity: 1;
   }
 }
+.modal-content ::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content ::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal-content ::-webkit-scrollbar-thumb {
+    background: rgba(14,165,233,0.35);
+    border-radius: 10px;
+}
+
+.modal-content ::-webkit-scrollbar-thumb:hover {
+    background: rgba(14,165,233,0.6);
+}
