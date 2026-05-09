@@ -171,6 +171,13 @@ exports.createTask = async (req, res) => {
       if (body[df] === '' || body[df] === 'Invalid Date') body[df] = null;
     }
     if (body.assigneeId === '') body.assigneeId = null;
+    if (
+    body.parentCode === '' ||
+    body.parentCode === 'undefined' ||
+    body.parentCode === undefined
+  ) {
+    body.parentCode = null;
+  }
     // collaborators phải là array — JSONB tự xử lý, chỉ cần đảm bảo là array
     if (body.collaborators !== undefined && !Array.isArray(body.collaborators)) {
       try { body.collaborators = JSON.parse(body.collaborators); } catch { body.collaborators = []; }
