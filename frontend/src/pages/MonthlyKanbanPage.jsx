@@ -822,7 +822,7 @@ export default function MonthlyKanbanPage() {
                     opacity: 0.6,
                   }}>
                     <Plus size={18} style={{ marginBottom: 4, opacity: 0.4 }} />
-                    Ch�a c� c�ng vi�!c
+                    Chưa có công việc
                   </div>
                 ) : (
                   colTasks.map(task => (
