@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { X, Download, ExternalLink, FileText, Image, File, Film } from 'lucide-react';
+import {
+  X,
+  Download,
+  ExternalLink,
+  FileText,
+  Image,
+  File,
+  Film,
+  Loader2
+} from 'lucide-react';
 
 const BASE_URL =
   import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -167,6 +176,7 @@ function PreviewModal({ file, onClose }) {
 // ── Component hiển thị danh sách file đính kèm ──
 export default function FileAttachmentList({ attachments = [], compact = false, onDelete }) {
   const [previewFile, setPreviewFile] = useState(null);
+  const [downloading, setDownloading] = useState(null);
 
   if (!attachments || attachments.length === 0) {
     return (
@@ -265,20 +275,74 @@ export default function FileAttachmentList({ attachments = [], compact = false, 
                     👁 Xem
                   </button>
                 )}
-                <a
-                  href={downloadUrl}
-                  download={f.originalName}
-                  style={{
-                    padding: '4px 8px', borderRadius: 6,
-                    backgroundColor: 'var(--bg-surface)', color: 'var(--text-muted)',
-                    fontSize: 11, fontWeight: 600, textDecoration: 'none',
-                    display: 'flex', alignItems: 'center', gap: 3,
-                    border: '1px solid var(--border)',
-                  }}
-                  title={`Tải xuống: ${f.originalName}`}
-                >
-                  <Download size={11} /> Tải
-                </a>
+                <button
+  onClick={async () => {
+    try {
+      setDownloading(f.filename);
+
+      const token = localStorage.getItem('token');
+
+const response = await fetch(downloadUrl, {
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
+});
+
+      if (!response.ok) {
+        throw new Error('Download failed');
+      }
+
+      const blob = await response.blob();
+
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = f.originalName;
+
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      window.URL.revokeObjectURL(url);
+
+      setTimeout(() => {
+        alert('✅ File đã tải xuống');
+      }, 500);
+
+    } catch (err) {
+      alert('❌ Không tải được file');
+    } finally {
+      setDownloading(null);
+    }
+  }}
+  style={{
+    padding: '4px 8px',
+    borderRadius: 6,
+    backgroundColor: 'var(--bg-surface)',
+    color: 'var(--text-muted)',
+    fontSize: 11,
+    fontWeight: 600,
+    border: '1px solid var(--border)',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 3,
+  }}
+  title={`Tải xuống: ${f.originalName}`}
+>
+  {downloading === f.filename ? (
+    <>
+      <Loader2 size={11} className="spin" />
+      Đang tải...
+    </>
+  ) : (
+    <>
+      <Download size={11} />
+      Tải
+    </>
+  )}
+</button>
                 {onDelete && (
                   <button
                     onClick={() => onDelete(f.filename)}
