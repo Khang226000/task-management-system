@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X,
   Download,
@@ -32,10 +32,24 @@ function FileIcon({ mimetype, size = 20 }) {
 
 // ── Modal xem trước file ──
 function PreviewModal({ file, onClose }) {
-  const fileUrl = `${BASE_URL}${file.url}`;
+  const fileUrl = `${BASE_URL}${encodeURI(file.url)}`;
   const isImage = file.mimetype?.startsWith('image/');
   const isPdf   = file.mimetype === 'application/pdf';
   const isVideo = file.mimetype?.startsWith('video/');
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+
+    window.addEventListener('keydown', onKey);
+
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+  const isOffice =
+  file.mimetype?.includes('word') ||
+  file.mimetype?.includes('excel') ||
+  file.mimetype?.includes('sheet') ||
+  file.mimetype?.includes('presentation');
 
   // URL download với tên gốc
   const downloadUrl = `${BASE_URL}/api/upload/download/${file.filename}?name=${encodeURIComponent(file.originalName)}`;
@@ -121,6 +135,8 @@ function PreviewModal({ file, onClose }) {
       }}>
         {isImage && (
           <img
+            loading="lazy"
+            decoding="async"
             src={fileUrl}
             alt={file.originalName}
             style={{ maxWidth: '100%', maxHeight: 'calc(90vh - 80px)', objectFit: 'contain' }}
@@ -137,10 +153,27 @@ function PreviewModal({ file, onClose }) {
           <video
             src={fileUrl}
             controls
-            style={{ maxWidth: '100%', maxHeight: 'calc(90vh - 80px)' }}
+            style={{
+  width: '100%',
+  maxWidth: '100%',
+  maxHeight: 'calc(90vh - 80px)',
+  background: '#000'
+}}
           />
         )}
-        {!isImage && !isPdf && !isVideo && (
+        {isOffice && (
+  <iframe
+    src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileUrl)}`}
+    title={file.originalName}
+    style={{
+      width: '100%',
+      height: 'calc(90vh - 80px)',
+      border: 'none',
+      background: '#fff'
+    }}
+  />
+)}
+        {!isImage && !isPdf && !isVideo && !isOffice && (
           <div style={{
             padding: 40, textAlign: 'center', color: 'rgba(255,255,255,0.6)',
           }}>
@@ -187,6 +220,7 @@ export default function FileAttachmentList({ attachments = [], compact = false, 
     <>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         {attachments.map((f, i) => {
+  const key = f.filename || i;
           const fileUrl = `${BASE_URL}${f.url}`;
           const downloadUrl = `${BASE_URL}/api/upload/download/${f.filename}?name=${encodeURIComponent(f.originalName)}`;
           const isImage = f.mimetype?.startsWith('image/');
@@ -194,7 +228,7 @@ export default function FileAttachmentList({ attachments = [], compact = false, 
           const canPreview = isImage || isPdf || f.mimetype?.startsWith('video/');
 
           return (
-            <div key={i} style={{
+            <div key={key} style={{
               display: 'flex', alignItems: 'center', gap: 10,
               padding: compact ? '6px 10px' : '8px 12px',
               borderRadius: 8,
@@ -288,11 +322,13 @@ export default function FileAttachmentList({ attachments = [], compact = false, 
                       document.body.appendChild(a);
                       a.click();
                       a.remove();
+                      setTimeout(() => {
                       window.URL.revokeObjectURL(url);
+                      }, 3000);
                       
-                      setTimeout(() => alert('✅ File đã tải xuống'), 500);
+                      
                     } catch (err) {
-                      alert('❌ Không tải được file');
+                      console.error(err);
                     } finally {
                       setDownloading(null);
                     }
