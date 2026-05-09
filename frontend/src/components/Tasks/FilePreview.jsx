@@ -32,7 +32,7 @@ function FileIcon({ mimetype, size = 20 }) {
 
 // ── Modal xem trước file ──
 function PreviewModal({ file, onClose }) {
-  const fileUrl = `${BASE_URL}${encodeURI(file.url)}`;
+  const fileUrl = `${BASE_URL}${file.url}`;
   const isImage = file.mimetype?.startsWith('image/');
   const isPdf   = file.mimetype === 'application/pdf';
   const isVideo = file.mimetype?.startsWith('video/');
@@ -85,19 +85,60 @@ function PreviewModal({ file, onClose }) {
           )}
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <a
-            href={downloadUrl}
-            download={file.originalName}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 5,
-              padding: '6px 14px', borderRadius: 7,
-              backgroundColor: 'rgba(14,165,233,0.2)', color: '#0ea5e9',
-              fontSize: 12, fontWeight: 700, textDecoration: 'none',
-              border: '1px solid rgba(14,165,233,0.3)',
-            }}
-          >
-            <Download size={13} /> Tải xuống
-          </a>
+          <button
+  onClick={async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    try {
+      const token = localStorage.getItem('token');
+
+      const response = await fetch(downloadUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Download failed');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = file.originalName;
+
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+      }, 3000);
+
+    } catch (err) {
+      console.error(err);
+      alert('Không tải được file');
+    }
+  }}
+  style={{
+    display: 'flex',
+    alignItems: 'center',
+    gap: 5,
+    padding: '6px 14px',
+    borderRadius: 7,
+    backgroundColor: 'rgba(14,165,233,0.2)',
+    color: '#0ea5e9',
+    fontSize: 12,
+    fontWeight: 700,
+    border: '1px solid rgba(14,165,233,0.3)',
+    cursor: 'pointer'
+  }}
+>
+  <Download size={13} /> Tải xuống
+</button>
           <a
             href={fileUrl}
             target="_blank"
