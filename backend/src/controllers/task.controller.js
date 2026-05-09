@@ -44,7 +44,7 @@ exports.getTasks = async (req, res) => {
     if (month) where.month = parseInt(month);
     if (year) where.year = parseInt(year);
     if (search) where.taskName = { [Op.iLike]: `%${search}%` };
-    if (parentCode !== undefined) where.parentCode = parentCode || null;
+    
 
     const tasks = await Task.findAll({
       where,
