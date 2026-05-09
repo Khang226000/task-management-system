@@ -90,11 +90,20 @@ exports.getTaskTree = async (req, res) => {
       filtered = resolved.filter(t => matchIds.has(t.taskCode) || parentCodes.has(t.taskCode));
     }
 
-    const parents = filtered.filter(t => !t.parentCode);
-    const tree = parents.map(parent => ({
-      ...parent,
-      children: filtered.filter(t => t.parentCode === parent.taskCode)
-    }));
+    const parents = filtered.filter(t => {
+  // task cha thật
+  if (!t.parentCode) return true;
+
+  // task con nhưng parent không tồn tại
+  const hasParent = filtered.some(p => p.taskCode === t.parentCode);
+
+  return !hasParent;
+});
+
+const tree = parents.map(parent => ({
+  ...parent,
+  children: filtered.filter(t => t.parentCode === parent.taskCode)
+}));
 
     res.json({ success: true, data: tree });
   } catch (error) {
