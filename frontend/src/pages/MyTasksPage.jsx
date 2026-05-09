@@ -444,13 +444,14 @@ function TaskUpdateModal({ task, onClose }) {
           {/* Body */}
           <div
   style={{
-    padding: '18px 20px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 18,
+    padding: '20px 24px',
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: 20,
     overflowY: 'auto',
     flex: 1,
-    minHeight: 0
+    minHeight: 0,
+    alignItems: 'start'
   }}
 >
 
@@ -690,7 +691,7 @@ function MonthlyTaskUpdateModal({ task, onClose }) {
     <>
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)}/>}
       <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-        <div className="modal-content" style={{ maxWidth:500 }}>
+        <div className="modal-content" style={{ maxWidth: 980, width: '96%', }}>
           <div
   style={{
     padding: '18px 22px',
@@ -772,11 +773,23 @@ function MonthlyTaskUpdateModal({ task, onClose }) {
               <ProgressBar value={progress} height={8}/>
             </div>
             {/* File đính kèm */}
-            <AttachmentSection taskId={task.id} taskType="monthly" attachments={attachments}
-              onAttachmentsChange={setAttachments}/>
+<div style={{ gridColumn: '1 / -1' }}>
+  <AttachmentSection
+    taskId={task.id}
+    taskType="monthly"
+    attachments={attachments}
+    onAttachmentsChange={setAttachments}
+  />
+</div>
 
             {/* Gia hạn */}
-            <div style={{ borderTop:'1px solid var(--border)', paddingTop:14 }}>
+<div
+  style={{
+    gridColumn: '1 / -1',
+    borderTop:'1px solid var(--border)',
+    paddingTop:14
+  }}
+>
               <label style={{ fontSize:12, fontWeight:700, color:'#f59e0b', display:'block', marginBottom:6 }}>🔄 Xin gia hạn</label>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
                 <div>
@@ -796,12 +809,28 @@ function MonthlyTaskUpdateModal({ task, onClose }) {
             </div>
 
             {/* Ghi chú */}
-            <div>
-              <label style={{ fontSize:12, fontWeight:700, color:'var(--text-secondary)', display:'block', marginBottom:6 }}>📝 Ghi chú / Báo cáo tiến độ</label>
-              <textarea className="input" rows={3} style={{ resize:'none', fontSize:13 }}
-                placeholder="Ghi chú tiến độ, vấn đề gặp phải..."
-                value={notes} onChange={e => setNotes(e.target.value)}/>
-            </div>
+<div style={{ gridColumn: '1 / -1' }}>
+  <label
+    style={{
+      fontSize:12,
+      fontWeight:700,
+      color:'var(--text-secondary)',
+      display:'block',
+      marginBottom:6
+    }}
+  >
+    📝 Ghi chú / Báo cáo tiến độ
+  </label>
+
+  <textarea
+    className="input"
+    rows={3}
+    style={{ resize:'none', fontSize:13 }}
+    placeholder="Ghi chú tiến độ, vấn đề gặp phải..."
+    value={notes}
+    onChange={e => setNotes(e.target.value)}
+  />
+</div>
           </div>
           <div
   style={{
