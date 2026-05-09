@@ -49,16 +49,6 @@ export const STATUS_CONFIG = {
     textHex: '#fbbf24',
     bg: 'bg-amber-500/20', text: 'text-amber-400', border: 'border-amber-400/40'
   },
-    review: {
-    label: 'Đang review',
-    color: '#8b5cf6',
-    dot: '#a78bfa',
-    bgHex: 'rgba(139,92,246,0.18)',
-    textHex: '#a78bfa',
-    bg: 'bg-violet-500/20',
-    text: 'text-violet-400',
-    border: 'border-violet-400/40'
-  },
   done: {
     label: 'Hoàn thành',
     color: '#10b981',
