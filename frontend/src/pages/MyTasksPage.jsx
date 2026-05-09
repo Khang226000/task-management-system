@@ -414,7 +414,20 @@ function TaskUpdateModal({ task, onClose }) {
     <>
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)}/>}
       <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-        <div className="modal-content" style={{ maxWidth:520 }}>
+        <div
+  className="modal-content"
+  style={{
+    maxWidth: 560,
+    width: '95%',
+    maxHeight: '92vh',
+    display: 'flex',
+    flexDirection: 'column',
+    borderRadius: 18,
+    overflow: 'hidden',
+    background: 'var(--bg-surface)',
+    boxShadow: '0 20px 60px rgba(0,0,0,0.45)'
+  }}
+>
           {/* Header */}
           <div style={{ padding:'16px 20px', borderBottom:'1px solid var(--border)' }}>
             <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
@@ -429,7 +442,17 @@ function TaskUpdateModal({ task, onClose }) {
           </div>
 
           {/* Body */}
-          <div style={{ padding:'20px', display:'flex', flexDirection:'column', gap:16 }}>
+          <div
+  style={{
+    padding: '18px 20px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 18,
+    overflowY: 'auto',
+    flex: 1,
+    minHeight: 0
+  }}
+>
 
             {/* ── Thông tin chi tiết (readonly) ── */}
             <div style={{ padding:'12px 14px', borderRadius:10, backgroundColor:'var(--bg-hover)', border:'1px solid var(--border)', display:'flex', flexDirection:'column', gap:8 }}>
@@ -668,7 +691,16 @@ function MonthlyTaskUpdateModal({ task, onClose }) {
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)}/>}
       <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
         <div className="modal-content" style={{ maxWidth:500 }}>
-          <div style={{ padding:'16px 20px', borderBottom:'1px solid var(--border)' }}>
+          <div
+  style={{
+    padding: '18px 22px',
+    borderBottom: '1px solid var(--border)',
+    background: 'var(--bg-surface)',
+    position: 'sticky',
+    top: 0,
+    zIndex: 5
+  }}
+>
             <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
               <span style={{ fontSize:13, fontFamily:'monospace', fontWeight:900, color:'#0ea5e9', backgroundColor:'#0ea5e915', padding:'3px 10px', borderRadius:6 }}>{task.taskId}</span>
               <span style={{ fontSize:11, padding:'2px 8px', borderRadius:5, fontWeight:800, backgroundColor:`${typeColor}20`, color:typeColor }}>{task.taskType === 'R' ? 'Thường xuyên' : 'Phát sinh'}</span>
@@ -771,7 +803,18 @@ function MonthlyTaskUpdateModal({ task, onClose }) {
                 value={notes} onChange={e => setNotes(e.target.value)}/>
             </div>
           </div>
-          <div style={{ display:'flex', gap:10, padding:'16px 20px', borderTop:'1px solid var(--border)' }}>
+          <div
+  style={{
+    display: 'flex',
+    gap: 10,
+    padding: '16px 20px',
+    borderTop: '1px solid var(--border)',
+    background: 'var(--bg-surface)',
+    position: 'sticky',
+    bottom: 0,
+    zIndex: 5
+  }}
+>
             <button onClick={onClose} className="btn btn-secondary" style={{ flex:1 }}>Đóng</button>
             <button onClick={handleSave} disabled={saving} className="btn btn-primary"
               style={{ flex:1, background:'linear-gradient(135deg,#0ea5e9,#0284c7)' }}>
@@ -986,7 +1029,7 @@ export default function MyTasksPage() {
         <div style={{ position:'sticky', top:16, display:'flex', flexDirection:'column', gap:12 }}>
 
           {/* KPI 2x2 */}
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))', gap:8 }}>
             {[
               { label:'Tổng CV',    value:total,   color:'#0ea5e9', icon:'📋' },
               { label:'Hoàn thành', value:done,    color:'#10b981', icon:'✅' },
