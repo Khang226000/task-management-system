@@ -5,6 +5,31 @@ const upload = require('../middleware/upload.middleware');
 const ctrl   = require('../controllers/upload.controller');
 const { authenticate } = require('../middleware/auth.middleware');
 
+// DOWNLOAD KHÔNG CẦN TOKEN
+router.get('/download/:filename', (req, res) => {
+  const filename     = path.basename(req.params.filename);
+  const originalName = path.basename(req.query.name || filename);
+  const filePath     = path.join(__dirname, '../../uploads', filename);
+
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({
+      success: false,
+      message: 'File không tồn tại'
+    });
+  }
+
+  const encodedName = encodeURIComponent(originalName);
+
+  res.setHeader(
+    'Content-Disposition',
+    `attachment; filename*=UTF-8''${encodedName}`
+  );
+
+  res.setHeader('Content-Type', 'application/octet-stream');
+
+  res.sendFile(filePath);
+});
+
 router.use(authenticate);
 
 // Upload file đính kèm
