@@ -210,7 +210,11 @@ export default function FileAttachmentList({ attachments = [], compact = false, 
             >
               {/* Thumbnail hoặc icon */}
               <div
-                onClick={() => setPreviewFile(f)}
+                
+  onClick={(e) => {
+    e.stopPropagation();
+    setPreviewFile(f);
+  }}
                 style={{ cursor: canPreview ? 'pointer' : 'default', flexShrink: 0 }}
                 title={canPreview ? 'Click để xem trước' : ''}
               >
@@ -236,130 +240,162 @@ export default function FileAttachmentList({ attachments = [], compact = false, 
                 )}
               </div>
 
-              {/* File info */}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div
-                  onClick={() => setPreviewFile(f)}
-                  style={{
-                    fontSize: compact ? 11 : 12, fontWeight: 700,
-                    color: canPreview ? '#0ea5e9' : 'var(--text-primary)',
-                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                    cursor: canPreview ? 'pointer' : 'default',
-                    textDecoration: canPreview ? 'underline' : 'none',
-                  }}
-                  title={canPreview ? 'Click để xem trước' : f.originalName}
-                >
-                  {f.originalName}
-                </div>
-                {!compact && (
-                  <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 2 }}>
-                    {formatBytes(f.size)}
-                    {f.uploadedAt && ` · ${new Date(f.uploadedAt).toLocaleDateString('vi-VN')}`}
-                  </div>
-                )}
-              </div>
+             {/* File info */}
+<div style={{ flex: 1, minWidth: 0 }}>
+  <div
+    onClick={(e) => {
+      e.stopPropagation();
+      setPreviewFile(f);
+    }}
+    style={{
+      fontSize: compact ? 11 : 12,
+      fontWeight: 700,
+      color: canPreview ? '#0ea5e9' : 'var(--text-primary)',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      cursor: canPreview ? 'pointer' : 'default',
+      textDecoration: canPreview ? 'underline' : 'none',
+    }}
+    title={canPreview ? 'Click để xem trước' : f.originalName}
+  >
+    {f.originalName}
+  </div>
+
+  {!compact && (
+    <div
+      style={{
+        fontSize: 10,
+        color: 'var(--text-muted)',
+        marginTop: 2,
+      }}
+    >
+      {formatBytes(f.size)}
+      {f.uploadedAt &&
+        ` · ${new Date(f.uploadedAt).toLocaleDateString('vi-VN')}`}
+    </div>
+  )}
+</div>
 
               {/* Actions */}
-              <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
-                {canPreview && (
-                  <button
-                    onClick={() => setPreviewFile(f)}
-                    style={{
-                      padding: '4px 8px', borderRadius: 6, border: 'none',
-                      backgroundColor: 'rgba(14,165,233,0.12)', color: '#0ea5e9',
-                      fontSize: 11, fontWeight: 600, cursor: 'pointer',
-                      display: 'flex', alignItems: 'center', gap: 3,
-                    }}
-                    title="Xem trước"
-                  >
-                    👁 Xem
-                  </button>
-                )}
-                <button
-  onClick={async () => {
-    try {
-      setDownloading(f.filename);
-
-      const token = localStorage.getItem('token');
-
-const response = await fetch(downloadUrl, {
-  headers: {
-    Authorization: `Bearer ${token}`
-  }
-});
-
-      if (!response.ok) {
-        throw new Error('Download failed');
-      }
-
-      const blob = await response.blob();
-
-      const url = window.URL.createObjectURL(blob);
-
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = f.originalName;
-
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-
-      window.URL.revokeObjectURL(url);
-
-      setTimeout(() => {
-        alert('✅ File đã tải xuống');
-      }, 500);
-
-    } catch (err) {
-      alert('❌ Không tải được file');
-    } finally {
-      setDownloading(null);
-    }
-  }}
-  style={{
-    padding: '4px 8px',
-    borderRadius: 6,
-    backgroundColor: 'var(--bg-surface)',
-    color: 'var(--text-muted)',
-    fontSize: 11,
-    fontWeight: 600,
-    border: '1px solid var(--border)',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 3,
-  }}
-  title={`Tải xuống: ${f.originalName}`}
->
-  {downloading === f.filename ? (
-    <>
-      <Loader2 size={11} className="spin" />
-      Đang tải...
-    </>
-  ) : (
-    <>
-      <Download size={11} />
-      Tải
-    </>
+<div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
+  {canPreview && (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        setPreviewFile(f);
+      }}
+      style={{
+        padding: '4px 8px',
+        borderRadius: 6,
+        border: 'none',
+        backgroundColor: 'rgba(14,165,233,0.12)',
+        color: '#0ea5e9',
+        fontSize: 11,
+        fontWeight: 600,
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 3,
+      }}
+      title="Xem trước"
+    >
+      👁 Xem
+    </button>
   )}
-</button>
-                {onDelete && (
-                  <button
-                    onClick={() => onDelete(f.filename)}
-                    style={{
-                      padding: '4px 8px', borderRadius: 6, border: 'none',
-                      backgroundColor: 'rgba(239,68,68,0.1)', color: '#ef4444',
-                      cursor: 'pointer', display: 'flex', alignItems: 'center',
-                    }}
-                    title="Xóa file"
-                  >
-                    <X size={12}/>
-                  </button>
-                )}
-              </div>
-            </div>
-          );
-        })}
+
+  <button
+    onClick={async (e) => {
+      e.stopPropagation();
+
+      try {
+        setDownloading(f.filename);
+
+        const token = localStorage.getItem('token');
+
+        const response = await fetch(downloadUrl, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Download failed');
+        }
+
+        const blob = await response.blob();
+
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = f.originalName;
+
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        window.URL.revokeObjectURL(url);
+
+      } catch (err) {
+        alert('❌ Không tải được file');
+      } finally {
+        setDownloading(null);
+      }
+    }}
+    style={{
+      padding: '4px 8px',
+      borderRadius: 6,
+      backgroundColor: 'var(--bg-surface)',
+      color: 'var(--text-muted)',
+      fontSize: 11,
+      fontWeight: 600,
+      border: '1px solid var(--border)',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 3,
+    }}
+    title={`Tải xuống: ${f.originalName}`}
+  >
+    {downloading === f.filename ? (
+      <>
+        <Loader2 size={11} className="spin" />
+        Đang tải...
+      </>
+    ) : (
+      <>
+        <Download size={11} />
+        Tải
+      </>
+    )}
+  </button>
+
+  {onDelete && (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        onDelete(f.filename);
+      }}
+      style={{
+        padding: '4px 8px',
+        borderRadius: 6,
+        border: 'none',
+        backgroundColor: 'rgba(239,68,68,0.1)',
+        color: '#ef4444',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+      }}
+      title="Xóa file"
+    >
+      <X size={12} />
+    </button>
+  )}
+</div>
+</div>
+);
+})}
       </div>
 
       {/* Preview modal */}
