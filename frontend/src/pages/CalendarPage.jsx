@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import {
   ChevronLeft, ChevronRight, Plus, X, Calendar, AlertTriangle
 } from 'lucide-react';
@@ -12,6 +12,15 @@ import { vi } from 'date-fns/locale';
 import TaskDetailModal from '../components/Tasks/TaskDetailModal';
 
 const WEEKDAYS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+function normalizeVN(str) {
+  if (!str) return '';
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .toLowerCase();
+}
 
 // Màu theo status cho task chip
 const STATUS_CHIP = {
@@ -25,6 +34,8 @@ export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents]           = useState([]);
   const [tasks, setTasks]             = useState([]);
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [selectedDay, setSelectedDay] = useState(null);
   const [showDayModal, setShowDayModal] = useState(false);
   const [showEventModal, setShowEventModal] = useState(false);
@@ -50,6 +61,13 @@ export default function CalendarPage() {
   }, [month, year]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+  const timer = setTimeout(() => {
+    setDebouncedSearch(search);
+  }, 300);
+
+  return () => clearTimeout(timer);
+}, [search]);
 
   // Build calendar grid
   const monthStart = startOfMonth(currentDate);
@@ -57,8 +75,23 @@ export default function CalendarPage() {
   const days       = eachDayOfInterval({ start: monthStart, end: monthEnd });
   const startPad   = getDay(monthStart); // 0=Sun
 
-  const getTasksForDay = (day) =>
-    tasks.filter(t => {
+  const filteredTasks = useMemo(() => {
+  if (!debouncedSearch.trim()) return tasks;
+
+  const kw = normalizeVN(debouncedSearch);
+
+  return tasks.filter(t => {
+    return (
+      normalizeVN(t.taskName).includes(kw) ||
+      normalizeVN(t.taskCode).includes(kw) ||
+      normalizeVN(t.assignee?.name).includes(kw) ||
+      normalizeVN(t.leadDepartment).includes(kw)
+    );
+  });
+}, [tasks, debouncedSearch]);
+
+const getTasksForDay = (day) =>
+  filteredTasks.filter(t => {
       const dl = t.extendedDeadline || t.deadline;
       if (!dl) return false;
       const d = new Date(dl);
@@ -117,6 +150,17 @@ export default function CalendarPage() {
         {/* Status filter tabs */}
         <div className="flex items-center gap-2 flex-wrap">
           <h2 className="text-lg font-bold mr-2" style={{ color: 'var(--text-primary)' }}>Lịch Biểu</h2>
+          <input
+        type="text"
+        placeholder="Tìm công việc..."
+      value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      className="input h-9 text-sm"
+        style={{
+          width: '220px',
+        minWidth: '220px'
+      }}
+    />
           {[
             { key: 'all',         label: `Tất cả (${statusCounts.all})` },
             { key: 'not_started', label: `Chưa bắt đầu (${statusCounts.not_started})` },
