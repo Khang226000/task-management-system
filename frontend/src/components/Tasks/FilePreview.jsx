@@ -225,7 +225,17 @@ export default function FileAttachmentList({ attachments = [], compact = false, 
           const downloadUrl = `${BASE_URL}/api/upload/download/${f.filename}?name=${encodeURIComponent(f.originalName)}`;
           const isImage = f.mimetype?.startsWith('image/');
           const isPdf   = f.mimetype === 'application/pdf';
-          const canPreview = isImage || isPdf || f.mimetype?.startsWith('video/');
+          const isOffice =
+  f.mimetype?.includes('word') ||
+  f.mimetype?.includes('excel') ||
+  f.mimetype?.includes('sheet') ||
+  f.mimetype?.includes('presentation');
+
+const canPreview =
+  isImage ||
+  isPdf ||
+  isOffice ||
+  f.mimetype?.startsWith('video/');
 
           return (
             <div key={key} style={{
@@ -240,7 +250,10 @@ export default function FileAttachmentList({ attachments = [], compact = false, 
               onMouseLeave={e => e.currentTarget.style.backgroundColor = 'var(--bg-hover)'}
             >
               <div
-                onClick={() => canPreview && setPreviewFile(f)}
+                onClick={(e) => {
+  e.stopPropagation();
+  if (canPreview) setPreviewFile(f);
+}}
                 style={{ cursor: canPreview ? 'pointer' : 'default', flexShrink: 0 }}
                 title={canPreview ? 'Click để xem trước' : ''}
               >
@@ -268,7 +281,10 @@ export default function FileAttachmentList({ attachments = [], compact = false, 
 
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div
-                  onClick={() => canPreview && setPreviewFile(f)}
+                  onClick={(e) => {
+  e.stopPropagation();
+  if (canPreview) setPreviewFile(f);
+}}
                   style={{
                     fontSize: compact ? 11 : 12, fontWeight: 700,
                     color: canPreview ? '#0ea5e9' : 'var(--text-primary)',
@@ -291,7 +307,11 @@ export default function FileAttachmentList({ attachments = [], compact = false, 
               <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
                 {canPreview && (
                   <button
-                    onClick={() => setPreviewFile(f)}
+                    onClick={(e) => {
+  e.stopPropagation();
+  e.preventDefault();
+  setPreviewFile(f);
+}}
                     style={{
                       padding: '4px 8px', borderRadius: 6, border: 'none',
                       backgroundColor: 'rgba(14,165,233,0.12)', color: '#0ea5e9',
@@ -303,7 +323,9 @@ export default function FileAttachmentList({ attachments = [], compact = false, 
                   </button>
                 )}
                 <button
-                  onClick={async () => {
+                  onClick={async (e) => {
+  e.stopPropagation();
+  e.preventDefault();
                     try {
                       setDownloading(f.filename);
                       const token = localStorage.getItem('token');
