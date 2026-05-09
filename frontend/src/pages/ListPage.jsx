@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { Plus, CheckCircle, ChevronRight, ChevronDown, AlertTriangle, Paperclip, XCircle, Clock } from 'lucide-react';
 import { useTaskStore } from '../store/taskStore';
 import { useAuthStore } from '../store/authStore';
@@ -269,17 +269,22 @@ export default function ListPage() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [showModal,    setShowModal]    = useState(false);
   const [showDetail,   setShowDetail]   = useState(false);
+  const [debouncedKw, setDebouncedKw] = useState('');
 
   const fetchRef = React.useRef(fetchTree);
   fetchRef.current = fetchTree;
 
   useEffect(() => {
-    fetchRef.current();
-  }, [
-    filters.month, filters.year, filters.workCategory,
-    filters.leadDepartment, filters.deputyDirector,
-    filters.assigneeId, filters.status, filters.search
-  ]);
+  fetchRef.current();
+}, [
+  filters.month,
+  filters.year,
+  filters.workCategory,
+  filters.leadDepartment,
+  filters.deputyDirector,
+  filters.assigneeId,
+  filters.status
+]);
 
   const handleDelete = async (id) => {
     const ok = await showConfirm({ title:'Xóa công việc', message:'Xóa công việc này? Các task con cũng sẽ bị xóa.', confirmLabel:'Xóa' });
@@ -297,16 +302,35 @@ export default function ListPage() {
 
   // Client-side search — tìm chính xác tiếng Việt có dấu + không dấu
   const kw = filters.search?.trim() || '';
-  const filteredTree = kw
-    ? taskTree.filter(parent => {
-        const parentMatch = matchSearch(parent, kw);
-        const childMatch  = (parent.children || []).some(c => matchSearch(c, kw));
-        return parentMatch || childMatch;
-      }).map(parent => ({
-        ...parent,
-        children: (parent.children || []).filter(c => matchSearch(c, kw) || matchSearch(parent, kw))
-      }))
-    : taskTree;
+  useEffect(() => {
+  const timer = setTimeout(() => {
+    setDebouncedKw(kw);
+  }, 300);
+
+  return () => clearTimeout(timer);
+}, [kw]);
+  const filteredTree = useMemo(() => {
+  if (!debouncedKw) return taskTree;
+
+  return taskTree
+    .filter(parent => {
+      const parentMatch = matchSearch(parent, debouncedKw);
+
+      const childMatch = (parent.children || []).some(c =>
+        matchSearch(c, debouncedKw)
+      );
+
+      return parentMatch || childMatch;
+    })
+    .map(parent => ({
+      ...parent,
+      children: (parent.children || []).filter(
+        c =>
+          matchSearch(c, debouncedKw) ||
+          matchSearch(parent, debouncedKw)
+      )
+    }));
+}, [taskTree, debouncedKw]);
 
   const HEADERS = [
     { label:'Mã CV',           width:130 },
