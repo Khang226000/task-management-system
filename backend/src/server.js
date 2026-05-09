@@ -85,7 +85,7 @@ app.use('/api/payments',      apiLimiter,  paymentRoutes);
 app.use('/api/departments',   apiLimiter,  departmentRoutes);
 
 // Static uploads
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ── Health check ────────────────────────────────────────────
 app.get('/api/health', async (req, res) => {
