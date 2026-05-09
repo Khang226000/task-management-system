@@ -429,7 +429,13 @@ function TaskUpdateModal({ task, onClose }) {
   }}
 >
           {/* Header */}
-          <div style={{ padding:'16px 20px', borderBottom:'1px solid var(--border)' }}>
+          <div
+  style={{
+    padding:'16px 20px',
+    borderBottom:'1px solid var(--border)',
+    flexShrink: 0
+  }}
+>
             <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
               <span style={{ fontSize:13, fontFamily:'monospace', fontWeight:900, color:cat?.color||'#0ea5e9', backgroundColor:`${cat?.color||'#0ea5e9'}15`, padding:'3px 10px', borderRadius:6 }}>
                 {task.taskCode}
@@ -443,15 +449,19 @@ function TaskUpdateModal({ task, onClose }) {
 
           {/* Body */}
           <div
+  className="task-detail-scroll"
   style={{
     padding: '20px 24px',
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
     gap: 20,
     overflowY: 'auto',
+    overflowX: 'hidden',
     flex: 1,
     minHeight: 0,
-    alignItems: 'start'
+    maxHeight: 'calc(92vh - 140px)',
+    alignItems: 'start',
+    paddingRight: 12
   }}
 >
 
@@ -580,7 +590,16 @@ function TaskUpdateModal({ task, onClose }) {
           </div>
 
           {/* Footer */}
-          <div style={{ display:'flex', gap:10, padding:'16px 20px', borderTop:'1px solid var(--border)' }}>
+          <div
+  style={{
+    display:'flex',
+    gap:10,
+    padding:'16px 20px',
+    borderTop:'1px solid var(--border)',
+    flexShrink: 0,
+    background:'var(--bg-surface)'
+  }}
+>
             <button onClick={onClose} className="btn btn-secondary" style={{ flex:1 }}>Đóng</button>
             <button onClick={handleSave} disabled={saving} className="btn btn-primary"
               style={{ flex:1, background:'linear-gradient(135deg,#0ea5e9,#0284c7)' }}>
