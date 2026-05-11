@@ -96,7 +96,7 @@ body {
   color: var(--text-primary);
   font-family: 'Segoe UI', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
-   font-size: 20px;
+   font-size: 17px;
   line-height: 1.8;
   line-height: 1.7;
 }
@@ -155,7 +155,7 @@ body {
   border: 1.5px solid var(--border);
   border-radius: 10px;
   padding: 10px 14px;
-  font-size: 18px;
+  font-size: 16px;
   color: var(--text-primary);
   outline: none;
 }
@@ -171,7 +171,7 @@ body {
   border: 1.5px solid var(--border);
   border-radius: 10px;
   padding: 10px 14px;
-  font-size: 18px;
+  font-size: 16px;
   color: var(--text-primary);
   outline: none;
   cursor: pointer;
@@ -345,7 +345,7 @@ body {
   padding: 14px 16px;
   border-bottom: 1px solid var(--border);
   color: var(--text-primary);
-  font-size: 18px;
+  font-size: 16px;
   vertical-align: middle;
 }
 tr:hover .app-table-td {
