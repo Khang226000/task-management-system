@@ -25,12 +25,10 @@ if (email === process.env.ADMIN_EMAIL) {
       return res.status(400).json({ success: false, message: 'Email đã được sử dụng' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
 const user = await User.create({
   name,
   email,
-  password: hashedPassword,
+  password: 
   role: role || 'member'
 });
     const token = generateToken(user);
