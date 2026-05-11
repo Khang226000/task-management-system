@@ -331,8 +331,8 @@ body {
    ============================================= */
 .app-table-th {
   color: var(--text-muted);
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 19px;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   padding: 16px 18px;
@@ -344,7 +344,7 @@ body {
   padding: 16px 18px;
   border-bottom: 1px solid var(--border);
   color: var(--text-primary);
-  font-size: 18px;
+  font-size: 19px;
   vertical-align: middle;
 }
 tr:hover .app-table-td {
