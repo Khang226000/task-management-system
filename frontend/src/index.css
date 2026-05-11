@@ -96,9 +96,8 @@ body {
   color: var(--text-primary);
   font-family: 'Segoe UI', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
-   font-size: 17px;
-  line-height: 1.8;
-  line-height: 1.7;
+   font-size: 18px;
+  line-height: 1.75;
 }
 
 /* =============================================
@@ -596,7 +595,7 @@ tr:hover .app-table-td {
     );
 }
 .task-title {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
   line-height: 1.5;
 }
