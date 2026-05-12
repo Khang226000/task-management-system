@@ -375,8 +375,8 @@ export default function MonthlyTaskPage() {
 
   const s = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
-  const colStyle = { padding: '10px 12px', borderBottom: '1px solid var(--border)', fontSize: 13, color: 'var(--text-primary)', verticalAlign: 'middle' };
-  const thStyle  = { padding: '10px 12px', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)', borderBottom: '2px solid var(--border)', whiteSpace: 'nowrap', backgroundColor: 'var(--bg-surface)' };
+  const colStyle = { padding: '12px 14px', borderBottom: '1px solid var(--border)', fontSize: 15, color: 'var(--text-primary)', verticalAlign: 'middle' };
+  const thStyle  = { padding: '12px 14px', fontSize: 13, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)', borderBottom: '2px solid var(--border)', whiteSpace: 'nowrap', backgroundColor: 'var(--bg-surface)' };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -384,10 +384,10 @@ export default function MonthlyTaskPage() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <h2 style={{ fontSize: 20, fontWeight: 900, color: 'var(--text-primary)', margin: 0 }}>
+          <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--text-primary)', margin: 0 }}>
             Quản lý công việc hằng tháng
           </h2>
-          <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>
+          <p style={{ fontSize: 15, color: 'var(--text-muted)', marginTop: 4 }}>
             Theo dõi tiến độ công việc thuờng xuyên và phát sinh
           </p>
         </div>
@@ -424,7 +424,7 @@ export default function MonthlyTaskPage() {
         {/* Người thực hiện */}
         <select className="select" style={{ width:160, fontSize:12, padding:'5px 10px' }}
           value={filterAssignee} onChange={e => setFilterAssignee(e.target.value)}>
-          <option value="">Tất cả ngời thực hi!n</option>
+          <option value="">Tất cả ngườii thực hiện</option>
           {users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
         </select>
 
@@ -529,7 +529,7 @@ export default function MonthlyTaskPage() {
             <tbody>
               {loading ? (
                 <tr><td colSpan={12} style={{ ...colStyle, textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>
-                  ĐĐang tải...
+                  Đang tải...
                 </td></tr>
               ) : tasks.length === 0 ? (
                 <tr><td colSpan={12} style={{ ...colStyle, textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>
@@ -577,7 +577,7 @@ export default function MonthlyTaskPage() {
                           <td style={{ ...colStyle, textAlign: 'center', color: 'var(--text-muted)', fontWeight: 700 }}>
                             {task.stt || idx + 1}
                           </td>
-                          <td style={{ ...colStyle, fontFamily: 'monospace', fontSize: 12, fontWeight: 700, color: '#38bdf8' }}>
+                          <td style={{ ...colStyle, fontFamily: 'monospace', fontSize: 14, fontWeight: 700, color: '#38bdf8' }}>
                             {task.taskId}
                           </td>
                           <td style={{ ...colStyle, fontWeight: 600 }}>
@@ -604,7 +604,7 @@ export default function MonthlyTaskPage() {
                                 <div style={{ width: 24, height: 24, borderRadius: '50%', backgroundColor: task.assignee.color || '#0ea5e9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: '#fff', flexShrink: 0 }}>
                                   {task.assignee.name?.charAt(0)}
                                 </div>
-                                <span style={{ fontSize: 13, fontWeight: 600 }}>{task.assignee.name}</span>
+                                <span style={{ fontSize: 15, fontWeight: 700 }}>{task.assignee.name}</span>
                               </div>
                             ) : '—'}
                           </td>
@@ -632,7 +632,7 @@ export default function MonthlyTaskPage() {
                               <div style={{ flex: 1, height: 8, borderRadius: 4, backgroundColor: 'var(--bg-hover)', overflow: 'hidden' }}>
                                 <div style={{ height: '100%', borderRadius: 4, backgroundColor: task.progress === 100 ? '#10b981' : '#0ea5e9', width: `${task.progress}%`, transition: 'width 0.3s' }} />
                               </div>
-                              <span style={{ fontSize: 12, fontWeight: 800, color: 'var(--text-secondary)', minWidth: 32 }}>
+                              <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-secondary)', minWidth: 32 }}>
                                 {task.progress}%
                               </span>
                             </div>
