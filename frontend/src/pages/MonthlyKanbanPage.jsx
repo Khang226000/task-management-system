@@ -113,17 +113,17 @@ function KanbanCard({ task, col, onClick }) {
       }}>
         <span style={{
           fontFamily: 'monospace',
-          fontSize: 11,
-          fontWeight: 800,
+          fontSize: 13,
+          fontWeight: 900,
           color: '#fff',
-          opacity: 0.9,
-        }}>
-          {task.taskId || '�'}
-        </span>
+          opacity: 1,
+          }}>
+  {task.taskId || '—'}
+</span>
         <div style={{ display: 'flex', gap: 4 }}>
           {task.taskType && (
             <span style={{
-              fontSize: 10,
+              fontSize: 12,
               fontWeight: 700,
               color: '#fff',
               backgroundColor: 'rgba(255,255,255,0.2)',
@@ -135,7 +135,7 @@ function KanbanCard({ task, col, onClick }) {
           )}
           {task.completion && (
             <span style={{
-              fontSize: 10,
+              fontSize: 12,
               fontWeight: 800,
               color: '#fff',
               backgroundColor: 'rgba(0,0,0,0.25)',
@@ -149,12 +149,12 @@ function KanbanCard({ task, col, onClick }) {
       </div>
 
       {/* Card body */}
-      <div style={{ padding: '10px 12px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
 
         {/* Task name � 2 lines max */}
         <div style={{
-          fontSize: 13,
-          fontWeight: 700,
+          fontSize: 16,
+          fontWeight: 800,
           color: 'var(--text-primary)',
           lineHeight: 1.45,
           display: '-webkit-box',
@@ -184,7 +184,7 @@ function KanbanCard({ task, col, onClick }) {
               {task.assignee.name?.charAt(0)}
             </div>
             <span style={{
-              fontSize: 11,
+              fontSize: 14,
               color: 'var(--text-secondary)',
               fontWeight: 600,
               overflow: 'hidden',
@@ -214,7 +214,7 @@ function KanbanCard({ task, col, onClick }) {
             }} />
           </div>
           <span style={{
-            fontSize: 11,
+            fontSize: 14,
             fontWeight: 800,
             color: progressColor,
             minWidth: 32,
@@ -229,7 +229,7 @@ function KanbanCard({ task, col, onClick }) {
           display: 'flex',
           alignItems: 'center',
           gap: 5,
-          fontSize: 11,
+          fontSize: 14,
           fontWeight: 700,
           padding: '3px 8px',
           borderRadius: 5,
@@ -632,7 +632,7 @@ export default function MonthlyKanbanPage() {
         border: '1.5px solid var(--border)',
         flexShrink: 0,
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: 'var(--text-muted)', marginRight: 4 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 15, color: 'var(--text-muted)', marginRight: 4 }}>
           <Filter size={13} />
           <span style={{ fontWeight: 700 }}>Lọc:</span>
         </div>
@@ -640,7 +640,7 @@ export default function MonthlyKanbanPage() {
         {/* Month */}
         <select
           className="select"
-          style={{ width: 120, fontSize: 12, padding: '5px 10px' }}
+          style={{ width: 120, fontSize: 14, padding: '8px 12px', height: 40, }}
           value={month}
           onChange={e => setMonth(parseInt(e.target.value))}
         >
@@ -650,7 +650,7 @@ export default function MonthlyKanbanPage() {
         {/* Year */}
         <select
           className="select"
-          style={{ width: 80, fontSize: 12, padding: '5px 10px' }}
+          style={{ width: 80, fontSize: 14, padding: '8px 12px', height: 40 }}
           value={year}
           onChange={e => setYear(parseInt(e.target.value))}
         >
@@ -662,7 +662,7 @@ export default function MonthlyKanbanPage() {
         {/* Department */}
         <select
           className="select"
-          style={{ width: 150, fontSize: 12, padding: '5px 10px' }}
+          style={{ width: 150, fontSize: 14, padding: '8px 12px', height: 40 }}
           value={filterDepartment}
           onChange={e => setFilterDepartment(e.target.value)}
         >
@@ -673,7 +673,7 @@ export default function MonthlyKanbanPage() {
         {/* Assignee */}
         <select
           className="select"
-          style={{ width: 160, fontSize: 12, padding: '5px 10px' }}
+          style={{ width: 160, fontSize: 14, padding: '8px 12px', height: 40 }}
           value={filterAssignee}
           onChange={e => setFilterAssignee(e.target.value)}
         >
@@ -684,7 +684,7 @@ export default function MonthlyKanbanPage() {
         {/* Group */}
         <select
           className="select"
-          style={{ width: 145, fontSize: 12, padding: '5px 10px' }}
+          style={{ width: 145, fontSize: 14, padding: '8px 12px', height: 40 }}
           value={filterGroup}
           onChange={e => setFilterGroup(e.target.value)}
         >
@@ -696,7 +696,7 @@ export default function MonthlyKanbanPage() {
         {/* Type */}
         <select
           className="select"
-          style={{ width: 130, fontSize: 12, padding: '5px 10px' }}
+          style={{ width: 130, fontSize: 14, padding: '8px 12px', height: 40 }}
           value={filterType}
           onChange={e => setFilterType(e.target.value)}
         >
@@ -708,7 +708,7 @@ export default function MonthlyKanbanPage() {
         {/* Completion */}
         <select
           className="select"
-          style={{ width: 145, fontSize: 12, padding: '5px 10px' }}
+          style={{ width: 145, fontSize: 14, padding: '8px 12px', height: 40 }}
           value={filterCompletion}
           onChange={e => setFilterCompletion(e.target.value)}
         >
@@ -735,7 +735,7 @@ export default function MonthlyKanbanPage() {
           </button>
         )}
 
-        <span style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--text-muted)' }}>
+        <span style={{ marginLeft: 'auto', fontSize: 14,  fontWeight: 600, color: 'var(--text-muted)' }}>
           {tasks.length} công việc
         </span>
       </div>
@@ -756,8 +756,8 @@ export default function MonthlyKanbanPage() {
               key={col.key}
               style={{
                 flex: '1 1 0',
-                minWidth: 260,
-                maxWidth: 380,
+                minWidth: 320,
+                maxWidth: 450,
                 display: 'flex',
                 flexDirection: 'column',
                 backgroundColor: 'var(--bg-surface)',
@@ -776,11 +776,11 @@ export default function MonthlyKanbanPage() {
                 justifyContent: 'space-between',
                 flexShrink: 0,
               }}>
-                <span style={{ fontSize: 13, fontWeight: 800, color: '#fff' }}>
+                <span style={{ fontSize: 16, fontWeight: 800, color: '#fff' }}>
                   {col.label}
                 </span>
                 <span style={{
-                  fontSize: 12,
+                  fontSize: 14,
                   fontWeight: 800,
                   backgroundColor: 'rgba(255,255,255,0.25)',
                   color: '#fff',
@@ -798,7 +798,7 @@ export default function MonthlyKanbanPage() {
                 padding: 10,
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 10,
+                gap: 14,
               }}>
                 {loading && colTasks.length === 0 ? (
                   [1, 2, 3].map(i => (
