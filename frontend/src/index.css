@@ -240,8 +240,33 @@ body {
 .kanban-col { background-color: var(--bg-surface); border: 1.5px solid var(--border); border-radius: 16px; min-width: 320px; width: 320px; }
 .kanban-col.drag-over { border-color: #0ea5e9; background-color: rgba(14, 165, 233, 0.06); }
 
-.app-table-th { color: var(--text-muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 14px 16px; border-bottom: 1.5px solid var(--border); background-color: var(--bg-surface); }
-.app-table-td { padding: 14px 16px; border-bottom: 1px solid var(--border); color: var(--text-primary); font-size: 14px; vertical-align: middle; }
+.app-table-th {
+  color: #7dd3fc;
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 18px 18px;
+  border-bottom: 1.5px solid var(--border);
+  background-color: var(--bg-surface);
+  white-space: nowrap;
+}
+
+.app-table-td {
+  padding: 18px 18px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.7;
+  vertical-align: middle;
+}
+.app-table-td strong,
+.app-table-td .task-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #ffffff;
+}
 tr:hover .app-table-td { background-color: var(--bg-hover); }
 
 /* =============================================
@@ -274,7 +299,7 @@ tr:hover .app-table-td { background-color: var(--bg-hover); }
   .modal-overlay { padding: 0; align-items: flex-end; }
   .modal-content { border-radius: 20px 20px 0 0; max-width: 100% !important; max-height: 92vh; width: 100% !important; overflow-y: auto; }
   .sidebar-item { min-height: 48px; font-size: 15px; }
-  .app-table-td, .app-table-th { padding: 8px 8px; font-size: 12px; }
+  .app-table-td, .app-table-th { padding: 10px 10px; font-size: 14px; }
   .kanban-col { min-width: 260px; width: 260px; }
   .app-header { padding: 0 12px; height: 56px !important; }
   .filter-bar-wrap { display: grid !important; grid-template-columns: 1fr 1fr; gap: 6px; }
