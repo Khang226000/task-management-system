@@ -97,7 +97,7 @@ function TaskRow({ task, children, onEdit, onDelete, onApprove, level = 0, searc
                 {expanded ? <ChevronDown size={13}/> : <ChevronRight size={13}/>}
               </button>
             ) : <span style={{ width:17, display:'inline-block' }}/>}
-            <span style={{ fontFamily:'monospace', fontSize:12, fontWeight:800, color: category?.color || '#0ea5e9',
+            <span style={{ fontFamily:'monospace', fontSize:14, fontWeight:800, color: category?.color || '#0ea5e9',
               backgroundColor:`${category?.color || '#0ea5e9'}15`, padding:'2px 7px', borderRadius:4 }}>
               {task.taskCode}
             </span>
@@ -112,7 +112,7 @@ function TaskRow({ task, children, onEdit, onDelete, onApprove, level = 0, searc
         {/* Task Name — highlight cảnh báo */}
         <td className="app-table-td" style={{ minWidth:200, maxWidth:320 }}>
           <div>
-            <span style={{ fontSize:13, fontWeight:600, color:'var(--text-primary)', lineHeight:1.4 }}>
+            <span style={{ fontSize:16, fontWeight:700, color:'var(--text-primary)', lineHeight:1.4 }}>
               {task.taskName}
             </span>
             {/* Badge cảnh báo inline */}
@@ -133,8 +133,8 @@ function TaskRow({ task, children, onEdit, onDelete, onApprove, level = 0, searc
 
         {/* Lead Dept */}
         <td className="app-table-td" style={{ whiteSpace:'nowrap' }}>
-          <span style={{ fontSize:12, fontWeight:700, color: dept?.color || 'var(--text-secondary)',
-            backgroundColor:`${dept?.color || '#6366f1'}15`, padding:'2px 7px', borderRadius:4 }}>
+          <span style={{ fontSize:14, fontWeight:700, color: dept?.color || 'var(--text-secondary)',
+            backgroundColor:`${dept?.color || '#6366f1'}15`, padding:'4px 10px', borderRadius:6 }}>
             {task.leadDepartment}
           </span>
         </td>
@@ -147,7 +147,7 @@ function TaskRow({ task, children, onEdit, onDelete, onApprove, level = 0, searc
                 display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, fontWeight:900, color:'#fff', flexShrink:0 }}>
                 {task.assignee.name?.charAt(0)}
               </div>
-              <span style={{ fontSize:12, color:'var(--text-secondary)' }}>{task.assignee.name}</span>
+              <span style={{ fontSize:14, fontWeight:600, color:'var(--text-secondary)' }}>{task.assignee.name}</span>
             </div>
           ) : <span style={{ color:'var(--text-muted)' }}>—</span>}
         </td>
@@ -174,7 +174,7 @@ function TaskRow({ task, children, onEdit, onDelete, onApprove, level = 0, searc
 
         {/* Deadline — đỏ khi overdue */}
         <td className="app-table-td" style={{ whiteSpace:'nowrap' }}>
-          <div style={{ display:'flex', alignItems:'center', gap:4, fontSize:12,
+          <div style={{ display:'flex', alignItems:'center', gap:4, fontSize:14,
             fontWeight: isOverdue || isDueToday ? 800 : 400,
             color: isOverdue ? '#ef4444' : isDueToday ? '#ef4444' : isDueSoon ? '#f97316' : 'var(--text-secondary)' }}>
             {(isOverdue || isDueToday) && <AlertTriangle size={11}/>}
@@ -202,7 +202,7 @@ function TaskRow({ task, children, onEdit, onDelete, onApprove, level = 0, searc
 
         {/* Status */}
         <td className="app-table-td" style={{ whiteSpace:'nowrap' }}>
-          <span style={{ fontSize:11, padding:'3px 10px', borderRadius:6, fontWeight:700,
+          <span style={{ fontSize:11, padding:'5px 14px', borderRadius:8, fontWeight:700,
             backgroundColor: status?.bgHex, color: status?.textHex }}>
             {status?.label}
           </span>
@@ -210,8 +210,8 @@ function TaskRow({ task, children, onEdit, onDelete, onApprove, level = 0, searc
 
         {/* Approval */}
         <td className="app-table-td" style={{ whiteSpace:'nowrap' }}>
-          <span style={{ display:'flex', alignItems:'center', gap:4, fontSize:11, fontWeight:700, padding:'3px 9px', borderRadius:6, backgroundColor:approval.bg, color:approval.color, width:'fit-content' }}>
-            <ApprovalIcon size={11}/> {approval.label}
+          <span style={{ display:'flex', alignItems:'center', gap:5, fontSize:13, fontWeight:700, padding:'5px 12px', borderRadius:8, backgroundColor:approval.bg, color:approval.color, width:'fit-content' }}>
+            <ApprovalIcon size={14}/> {approval.label}
           </span>
         </td>
 
@@ -364,7 +364,7 @@ export default function ListPage() {
               <tr style={{ backgroundColor:'var(--bg-surface)' }}>
                 {HEADERS.map((h, i) => (
                   <th key={i} style={{
-                    padding:'11px 14px', fontSize:11, fontWeight:800, textTransform:'uppercase',
+                    padding:'11px 14px', fontSize:13, fontWeight:800, textTransform:'uppercase',
                     letterSpacing:'0.06em', color:'var(--text-muted)', borderBottom:'2px solid var(--border)',
                     textAlign:'left', whiteSpace:'nowrap', width:h.width,
                     backgroundColor:'var(--bg-surface)'
