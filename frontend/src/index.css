@@ -240,35 +240,52 @@ body {
 .kanban-col { background-color: var(--bg-surface); border: 1.5px solid var(--border); border-radius: 16px; min-width: 320px; width: 320px; }
 .kanban-col.drag-over { border-color: #0ea5e9; background-color: rgba(14, 165, 233, 0.06); }
 
+/* =============================================
+   TABLE - BIGGER & EASIER TO READ
+   ============================================= */
+
 .app-table-th {
-  color: #7dd3fc;
-  font-size: 14px;
-  font-weight: 800;
+  color: #7dd3fc !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  padding: 18px 18px;
+  padding: 22px 20px !important;
   border-bottom: 1.5px solid var(--border);
   background-color: var(--bg-surface);
   white-space: nowrap;
 }
 
 .app-table-td {
-  padding: 18px 18px;
+  padding: 22px 20px !important;
   border-bottom: 1px solid var(--border);
   color: var(--text-primary);
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.7;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  line-height: 1.8;
   vertical-align: middle;
 }
-.app-table-td strong,
-.app-table-td .task-title {
-  font-size: 17px;
-  font-weight: 700;
+
+/* Tên công việc */
+.app-table-td .task-title,
+.app-table-td strong {
+  font-size: 20px !important;
+  font-weight: 700 !important;
   color: #ffffff;
 }
-tr:hover .app-table-td { background-color: var(--bg-hover); }
 
+/* Badge trạng thái */
+.badge {
+  padding: 7px 14px !important;
+  border-radius: 8px;
+  font-size: 14px !important;
+  font-weight: 700;
+}
+
+/* Hover */
+tr:hover .app-table-td {
+  background-color: rgba(56, 189, 248, 0.06);
+}
 /* =============================================
    THEME TOGGLE
    ============================================= */
