@@ -87,7 +87,7 @@ export default function KanbanPage() {
   className="text-sm font-semibold"
   style={{
     color: '#fff',
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: 800,
   }}
 >
@@ -98,7 +98,7 @@ export default function KanbanPage() {
   style={{
     backgroundColor: 'rgba(255,255,255,0.22)',
     color: '#fff',
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: 800,
   }}
 >
@@ -108,7 +108,7 @@ export default function KanbanPage() {
                 <button onClick={() => { setSelectedTask(null); setShowModal(true); }}
                   className="p-1 rounded transition-colors hover:bg-white/20"
                   style={{ color: '#fff' }}>
-                  <Plus size={15} />
+                  <Plus size={18} />
                 </button>
               </div>
 
@@ -128,7 +128,13 @@ export default function KanbanPage() {
                 ) : tasks.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-10" style={{ color: 'var(--text-muted)' }}>
                     <Plus size={20} className="mb-1 opacity-40" />
-                    <p className="text-xs opacity-60">Chưa có công việc</p>
+                    <p style={{
+  fontSize: 14,
+  fontWeight: 600,
+  opacity: 0.7
+}}>
+  Chưa có công việc
+</p>
                   </div>
                 ) : (
                   tasks.map(task => (
