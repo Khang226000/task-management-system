@@ -58,8 +58,18 @@ export default function QuickAddTaskModal({ onClose }) {
 
   // ── Tab New: tạo task mới ──
   const [form, setForm] = useState({
-    taskCode: '', parentCode: '', workCategory: 'ADM', taskName: '',
-    leadDepartment: 'LD-ADM', assigneeId: '', deputyDirector: 'GĐ-Hải',
+  taskCode: '',
+  parentCode: '',
+  workCategory: 'ADM',
+  taskName: '',
+
+  // bộ phận cho TASK
+  leadDepartment: 'LD-ADM',
+
+  // bộ phận cho MONTHLY TASK
+  department: 'Hành chính tổng hợp',
+
+  assigneeId: '',, assigneeId: '', deputyDirector: 'GĐ-Hải',
     deadline: '', taskType: 'R', status: 'not_started', progress: 0,
     deliverable: '', notes: '',
     month: new Date().getMonth() + 1, year: new Date().getFullYear()
@@ -227,7 +237,27 @@ export default function QuickAddTaskModal({ onClose }) {
               </div>
               <div>
                 <label style={{ fontSize:12, fontWeight:700, color:'var(--text-secondary)', display:'block', marginBottom:5 }}>Bộ phận</label>
-                <select className="select" value={form.leadDepartment} onChange={e => setForm(f => ({...f, leadDepartment: e.target.value}))}>
+                <select
+  className="select"
+  value={form.leadDepartment}
+  onChange={e => {
+  const value = e.target.value;
+
+  setForm(f => ({
+    ...f,
+    leadDepartment: value,
+
+    // map sang bảng tiến độ tháng
+    department:
+      value === 'LD-BOD'  ? 'Ban Giám đốc' :
+      value === 'LD-SER'  ? 'Dịch vụ' :
+      value === 'LD-ADM'  ? 'Hành chính tổng hợp' :
+      value === 'LD-INNO' ? 'KN&ĐMST' :
+      value === 'LD-INF'  ? 'Thông tin thống kê' :
+      '',
+  }));
+}}
+>
                   {Object.entries(LEAD_DEPT).map(([k,v]) => <option key={k} value={k}>{k} – {v.label}</option>)}
                 </select>
               </div>
