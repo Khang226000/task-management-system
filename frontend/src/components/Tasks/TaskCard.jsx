@@ -116,9 +116,17 @@ export default function TaskCard({ task, onClick }) {
         padding: '7px 12px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6
       }}>
-        <span style={{ fontFamily: 'monospace', fontSize: 11, fontWeight: 900, color: '#fff', opacity: 0.95, flexShrink: 0 }}>
-          {task.taskCode}
-        </span>
+        <span style={{
+  fontFamily: 'monospace',
+  fontSize: 14,
+  fontWeight: 900,
+  color: '#fff',
+  opacity: 0.98,
+  flexShrink: 0,
+  letterSpacing: '0.03em'
+}}>
+  {task.taskCode}
+</span>
         <div style={{ display: 'flex', gap: 4, alignItems: 'center', flex: 1, justifyContent: 'center', flexWrap: 'wrap' }}>
           {task.leadDepartment && (
             <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 7px', borderRadius: 4,
@@ -127,13 +135,13 @@ export default function TaskCard({ task, onClick }) {
             </span>
           )}
           {task.taskType && (
-            <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4,
+            <span style={{ fontSize: 11, fontWeight: 700, padding: '1px 6px', borderRadius: 4,
               backgroundColor: 'rgba(0,0,0,0.2)', color: '#fff' }}>
               {task.taskType}
             </span>
           )}
         </div>
-        <span style={{ fontSize: 10, fontWeight: 800, padding: '2px 9px', borderRadius: 5,
+        <span style={{ fontSize: 12, fontWeight: 900, padding: '2px 9px', borderRadius: 5,
           backgroundColor: 'rgba(0,0,0,0.25)', color: '#fff', whiteSpace: 'nowrap', flexShrink: 0 }}>
           {status?.label}
         </span>
@@ -142,7 +150,7 @@ export default function TaskCard({ task, onClick }) {
       {/* ── Body ── */}
       <div style={{ padding: '11px 13px', display: 'flex', flexDirection: 'column', gap: 8 }}>
 
-        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.4,
+        <div style={{ fontSize: 17, fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.4,
           display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
           {task.taskName}
         </div>
@@ -155,7 +163,7 @@ export default function TaskCard({ task, onClick }) {
             </span>
           )}
           {task.leadDepartment && (
-            <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 4,
+            <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 4,
               backgroundColor: `${dept?.color || '#6366f1'}18`, color: dept?.color || '#6366f1' }}>
               {task.leadDepartment}
             </span>
@@ -164,13 +172,13 @@ export default function TaskCard({ task, onClick }) {
 
         {/* Progress bar */}
         <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, marginBottom: 4, color: 'var(--text-muted)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4, color: 'var(--text-muted)' }}>
             <span>Tiến độ</span>
             <span style={{ fontWeight: 800, color: isOverdue ? '#ef4444' : isDueToday ? '#ef4444' : 'var(--text-muted)' }}>
               {task.progress}%
             </span>
           </div>
-          <div style={{ width: '100%', height: 6, borderRadius: 3, backgroundColor: 'var(--bg-hover)', overflow: 'hidden' }}>
+          <div style={{ width: '100%', height: 9, borderRadius: 3, backgroundColor: 'var(--bg-hover)', overflow: 'hidden' }}>
             <div style={{ height: '100%', borderRadius: 3, width: `${task.progress}%`, transition: 'width 0.4s',
               backgroundColor: isDone ? '#10b981' : isOverdue ? '#ef4444' : isDueToday ? '#ef4444' : isDueSoon ? '#f97316' : statusColor }}/>
           </div>
@@ -182,7 +190,7 @@ export default function TaskCard({ task, onClick }) {
             {isValidDate && (
               <div style={{
                 display: 'flex', alignItems: 'center', gap: 4,
-                fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 5,
+                fontSize: 12, fontWeight: 800, padding: '3px 8px', borderRadius: 5,
                 backgroundColor: isOverdue  ? 'rgba(239,68,68,0.20)'
                                : isDueToday ? 'rgba(239,68,68,0.20)'  // hôm nay = đỏ
                                : isDueSoon  ? 'rgba(249,115,22,0.16)'
@@ -233,10 +241,10 @@ export default function TaskCard({ task, onClick }) {
             )}
             {task.assignee && (
               <div title={task.assignee.name} style={{
-                width:26, height:26, borderRadius:'50%',
+                width:34, height:34, borderRadius:'50%',
                 backgroundColor: task.assignee.color || '#6366f1',
                 display:'flex', alignItems:'center', justifyContent:'center',
-                fontSize:11, fontWeight:900, color:'#fff',
+                fontSize:14, fontWeight:900, color:'#fff',
                 boxShadow:`0 0 0 2px var(--bg-card), 0 0 0 3px ${task.assignee.color||'#6366f1'}60`
               }}>
                 {task.assignee.name?.charAt(0).toUpperCase()}
