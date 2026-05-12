@@ -63,7 +63,8 @@ export default function KanbanPage() {
   }`,
   borderRadius: 14,
   overflow: 'hidden',
-  backgroundColor: 'var(--bg-surface)',
+  backgroundColor: 'var(--bg-card)',
+boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
 }}
               onDragOver={e => handleDragOver(e, col.key)}
               onDrop={e => handleDrop(e, col.key)}
@@ -82,33 +83,39 @@ export default function KanbanPage() {
   }}
 >
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: col.color }} />
-                  <span
-  className="text-sm font-semibold"
-  style={{
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 800,
-  }}
->
-  {col.label}
-</span>{col.label}</span>
-                  <span
-  className="text-xs px-2 py-0.5 rounded-full font-medium"
-  style={{
-    backgroundColor: 'rgba(255,255,255,0.22)',
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: 800,
-  }}
->
-                    {tasks.length}
-                  </span>
-                </div>
+  <div
+    className="w-3 h-3 rounded-full"
+    style={{ backgroundColor: col.color }}
+  />
+
+  <span
+    className="text-sm font-semibold"
+    style={{
+      color: '#fff',
+      fontSize: 16,
+      fontWeight: 800,
+      letterSpacing: '0.02em',
+    }}
+  >
+    {col.label}
+  </span>
+
+  <span
+    className="text-xs px-2 py-0.5 rounded-full font-medium"
+    style={{
+      backgroundColor: 'rgba(255,255,255,0.22)',
+      color: '#fff',
+      fontSize: 14,
+      fontWeight: 800,
+    }}
+  >
+    {tasks.length}
+  </span>
+</div>
                 <button onClick={() => { setSelectedTask(null); setShowModal(true); }}
-                  className="p-1 rounded transition-colors hover:bg-white/20"
+                  className="p-2 rounded-xl transition-all hover:bg-white/20 hover:scale-110"
                   style={{ color: '#fff' }}>
-                  <Plus size={18} />
+                  <Plus size={22} strokeWidth={2.5} />
                 </button>
               </div>
 
