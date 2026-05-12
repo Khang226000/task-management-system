@@ -845,7 +845,7 @@ export default function MonthlyTaskPage() {
                     const t = e.target.value;
                     setForm(f => ({ ...f, taskType: t, taskGroup: t === 'A' ? 'PHAT_SINH' : 'THUONG_XUYEN' }));
                   }}>
-                    <option value="R">R – Thờng xuyên</option>
+                    <option value="R">R – Thuờng xuyên</option>
                     <option value="A">A – Phát sinh</option>
                   </select>
                 </div>
