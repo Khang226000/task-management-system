@@ -432,7 +432,7 @@ export default function MonthlyTaskPage() {
         <select className="select" style={{ width:145, fontSize:12, padding:'5px 10px' }}
           value={filterGroup} onChange={e => setFilterGroup(e.target.value)}>
           <option value="">Tất cả nhóm</option>
-          <option value="THUONG_XUYEN">Thờng xuyên (R)</option>
+          <option value="THUONG_XUYEN">Thường xuyên (R)</option>
           <option value="PHAT_SINH">Phát sinh (A)</option>
         </select>
 
@@ -440,7 +440,7 @@ export default function MonthlyTaskPage() {
         <select className="select" style={{ width:130, fontSize:12, padding:'5px 10px' }}
           value={filterType} onChange={e => setFilterType(e.target.value)}>
           <option value="">Tất cả loại</option>
-          <option value="R">R – Thờng xuyên</option>
+          <option value="R">R – Thuờng xuyên</option>
           <option value="A">A – Phát sinh</option>
         </select>
 
