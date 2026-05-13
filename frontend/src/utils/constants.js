@@ -9,12 +9,11 @@ export const WORK_CATEGORY = {
 
 // ── Lead Department ──
 export const LEAD_DEPT = {
-  'LD-INNO': { label: 'KN&DMST',                short: 'LD-INNO', color: '#ef4444' },
+  'LD-INNO': { label: 'KN&ĐMST',                short: 'LD-INNO', color: '#ef4444' },
   'LD-ADM':  { label: 'Hành chính tổng hợp',    short: 'LD-ADM',  color: '#f59e0b' },
   'LD-INF':  { label: 'Thông tin thống kê',      short: 'LD-INF',  color: '#8b5cf6' },
   'LD-SER':  { label: 'Dịch vụ',                 short: 'LD-SER',  color: '#10b981' },
   'LD-BOD':  { label: 'Ban Giám đốc',            short: 'LD-BOD',  color: '#0ea5e9' },
-  'LD-COM':  { label: 'Hành chính tổng hợp',     short: 'LD-COM',  color: '#6366f1' },
 };
 
 /**
