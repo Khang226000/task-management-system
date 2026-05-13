@@ -149,13 +149,13 @@ const getTasksForDay = (day) =>
       <div className="flex items-center justify-between flex-wrap gap-3">
         {/* Status filter tabs */}
         <div className="flex items-center gap-2 flex-wrap">
-          <h2 className="text-lg font-bold mr-2" style={{ color: 'var(--text-primary)' }}>Lịch Biểu</h2>
+          <h2 className="text-lg font-bold mr-3" style={{ color: 'var(--text-primary)' }}>Lịch Biểu</h2>
           <input
         type="text"
         placeholder="Tìm công việc..."
       value={search}
         onChange={(e) => setSearch(e.target.value)}
-      className="input h-9 text-sm"
+      className="input h-12 text-sm"
         style={{
           width: '220px',
         minWidth: '220px'
@@ -170,7 +170,7 @@ const getTasksForDay = (day) =>
             <button
               key={tab.key}
               onClick={() => setActiveFilter(tab.key)}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
+              className="px-4 py-2.5 rounded-lg text-xs font-semibold transition-all"
               style={{
                 backgroundColor: activeFilter === tab.key ? '#6366f1' : 'var(--bg-hover)',
                 color: activeFilter === tab.key ? '#fff' : 'var(--text-secondary)'
@@ -188,7 +188,7 @@ const getTasksForDay = (day) =>
             style={{ color: 'var(--text-secondary)' }}>
             <ChevronLeft size={18} />
           </button>
-          <span className="text-base font-bold min-w-36 text-center" style={{ color: 'var(--text-primary)' }}>
+          <span className="text-x1 font-bold min-w-36 text-center" style={{ color: 'var(--text-primary)' }}>
             {format(currentDate, 'MMMM yyyy', { locale: vi }).toUpperCase()}
           </span>
           <button onClick={() => setCurrentDate(d => addMonths(d, 1))}
@@ -198,7 +198,7 @@ const getTasksForDay = (day) =>
           </button>
           <button
             onClick={() => { setEventForm(f => ({ ...f, startDate: format(new Date(), 'yyyy-MM-dd') })); setShowEventModal(true); }}
-            className="btn btn-primary text-sm">
+            className="btn btn-primary text-base px-5 py-3">
             <Plus size={15} /> Thêm sự kiện
           </button>
         </div>
@@ -209,7 +209,7 @@ const getTasksForDay = (day) =>
         {/* Weekday headers */}
         <div className="grid grid-cols-7 border-b" style={{ borderColor: 'var(--border)' }}>
           {WEEKDAYS.map((d, i) => (
-            <div key={d} className="py-3 text-center text-xs font-bold uppercase tracking-wider"
+            <div key={d} className="py-4 text-center text-base font-bold uppercase tracking-wider"
               style={{ color: i === 0 ? '#ef4444' : i === 6 ? '#6366f1' : 'var(--text-muted)' }}>
               {d}
             </div>
@@ -217,7 +217,7 @@ const getTasksForDay = (day) =>
         </div>
 
         {/* Days grid */}
-        <div className="grid grid-cols-7 flex-1" style={{ gridAutoRows: 'minmax(110px, 1fr)' }}>
+        <div className="grid grid-cols-7 flex-1" style={{ gridAutoRows: 'minmax(150px, 1fr)' }}>
           {/* Padding cells */}
           {Array.from({ length: startPad }).map((_, i) => (
             <div key={`pad-${i}`} className="border-b border-r p-2"
@@ -251,7 +251,7 @@ const getTasksForDay = (day) =>
               >
                 {/* Day number row */}
                 <div className="flex items-center justify-between mb-1">
-                  <div className={`w-7 h-7 flex items-center justify-center rounded-full text-sm font-bold
+                  <div className={`w-10 h-10 flex items-center justify-center rounded-full text-lg font-bold
                     ${today ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/40' : ''}`}
                     style={{ color: today ? undefined : isSun ? '#ef4444' : isSat ? '#6366f1' : 'var(--text-primary)' }}>
                     {format(day, 'd')}
@@ -268,7 +268,7 @@ const getTasksForDay = (day) =>
                 {/* Events */}
                 {dayEvents.slice(0, 1).map(ev => (
                   <div key={ev.id}
-                    className="text-xs px-1.5 py-0.5 rounded mb-0.5 truncate font-medium"
+                    className="text-sm px-2 py-1 rounded mb-0.5 truncate font-medium"
                     style={{ backgroundColor: `${ev.color}25`, color: ev.color, border: `1px solid ${ev.color}40` }}
                     onClick={e => e.stopPropagation()}>
                     📅 {ev.title}
@@ -281,9 +281,9 @@ const getTasksForDay = (day) =>
                   const cat  = WORK_CATEGORY[task.workCategory];
                   return (
                     <div key={task.id}
-                      className="text-xs px-1.5 py-0.5 rounded mb-0.5 truncate flex items-center gap-1"
+                      className="text-sm px-2 py-1 rounded mb-0.5 truncate flex items-center gap-1"
                       style={{ backgroundColor: chip.bg, color: chip.text }}>
-                      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: chip.dot }} />
+                      <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: chip.dot }} />
                       <span className="truncate font-medium">{task.taskCode}: {task.taskName}</span>
                     </div>
                   );
@@ -291,7 +291,7 @@ const getTasksForDay = (day) =>
 
                 {/* More indicator */}
                 {total > 3 && (
-                  <div className="text-xs font-semibold mt-0.5 px-1" style={{ color: 'var(--text-muted)' }}>
+                  <div className="text-sm font-semibold mt-0.5 px-1" style={{ color: 'var(--text-muted)' }}>
                     +{total - 3} thêm...
                   </div>
                 )}
@@ -309,7 +309,7 @@ const getTasksForDay = (day) =>
             <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: 'var(--border)' }}>
               <div className="flex items-center gap-2">
                 <Calendar size={18} className="text-indigo-400" />
-                <h2 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>
+                <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
                   Công việc ngày {format(selectedDay, 'dd/MM/yyyy')}
                 </h2>
               </div>
@@ -324,7 +324,7 @@ const getTasksForDay = (day) =>
               {/* Events section */}
               {selectedEvents.length > 0 && (
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>
+                  <p className="text-sm font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>
                     Sự kiện
                   </p>
                   {selectedEvents.map(ev => (
@@ -333,8 +333,8 @@ const getTasksForDay = (day) =>
                       style={{ backgroundColor: `${ev.color}15`, border: `1px solid ${ev.color}30` }}>
                       <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: ev.color }} />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{ev.title}</p>
-                        <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                        <p className="text-lg font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{ev.title}</p>
+                        <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
                           {EVENT_TYPE_CONFIG[ev.type]?.label}
                           {ev.description && ` · ${ev.description}`}
                         </p>
@@ -368,7 +368,7 @@ const getTasksForDay = (day) =>
                         onClick={() => { setSelectedTask(task); setShowTaskDetail(true); setShowDayModal(false); }}
                       >                        {/* Code + status */}
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-mono font-bold" style={{ color: cat?.color }}>
+                          <span className="text-sm font-mono font-bold" style={{ color: cat?.color }}>
                             {task.taskCode}
                           </span>
                           <span className={`badge ${status.bg} ${status.text}`} style={{ fontSize: '11px' }}>
@@ -376,17 +376,17 @@ const getTasksForDay = (day) =>
                           </span>
                         </div>
                         {/* Name */}
-                        <p className="text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                        <p className="text-lg font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>
                           {task.taskName}
                         </p>
                         {/* Meta */}
                         <div className="flex items-center gap-3 flex-wrap">
-                          <span className="text-xs px-2 py-0.5 rounded-full font-medium"
+                          <span className="text-sm px-3 py-1 rounded-full font-medium"
                             style={{ backgroundColor: `${cat?.color}20`, color: cat?.color }}>
                             {task.workCategory}
                           </span>
                           {task.leadDepartment && (
-                            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                            <span className="text-sm" style={{ color: 'var(--text-muted)' }}>
                               {task.leadDepartment}
                             </span>
                           )}
@@ -441,7 +441,7 @@ const getTasksForDay = (day) =>
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setShowEventModal(false)}>
           <div className="modal-content" style={{ maxWidth: '420px' }}>
             <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: 'var(--border)' }}>
-              <h2 className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>Thêm sự kiện</h2>
+              <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Thêm sự kiện</h2>
               <button onClick={() => setShowEventModal(false)}
                 className="p-1.5 rounded-lg hover:bg-[var(--bg-hover)]"
                 style={{ color: 'var(--text-secondary)' }}>
@@ -450,8 +450,8 @@ const getTasksForDay = (day) =>
             </div>
             <form onSubmit={handleAddEvent} className="p-5 space-y-4">
               <div>
-                <label className="block text-xs font-semibold mb-1.5" style={{ color: 'var(--text-secondary)' }}>Tiêu đề *</label>
-                <input className="input" placeholder="Tên sự kiện..." value={eventForm.title}
+                <label className="block text-sm font-semibold mb-1.5" style={{ color: 'var(--text-secondary)' }}>Tiêu đề *</label>
+                <input className="input text-base h-12" placeholder="Tên sự kiện..." value={eventForm.title}
                   onChange={e => setEventForm(f => ({ ...f, title: e.target.value }))} required />
               </div>
               <div className="grid grid-cols-2 gap-3">
