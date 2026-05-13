@@ -18,8 +18,7 @@ const COLUMNS = [
 
 const DEPT_OPTIONS = [
   'KN&ĐMST',
-  'Hành chính',
-  'Truyền thông',
+  'hành chính tổng hợp',
   'Thông tin thống kê',
   'Dịch vụ',
   'Ban Giám đốc',
