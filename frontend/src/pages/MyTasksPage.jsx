@@ -186,10 +186,18 @@ export function ChangePasswordModal({ onClose }) {
   return (
     <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="modal-content" style={{ maxWidth:420 }}>
-        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px 20px', borderBottom:'1px solid var(--border)' }}>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'22px 28px', borderBottom:'1px solid var(--border)' }}>
           <div style={{ display:'flex', alignItems:'center', gap:8 }}>
             <KeyRound size={18} style={{ color:'#0ea5e9' }}/>
-            <h3 style={{ fontSize:16, fontWeight:800, color:'var(--text-primary)', margin:0 }}>Đổi mật khẩu</h3>
+            <h3
+  style={{
+    fontSize:22,
+    fontWeight:900,
+    color:'var(--text-primary)',
+    margin:0,
+    lineHeight:1.4
+  }}
+>Đổi mật khẩu</h3>
           </div>
           <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--text-muted)' }}><X size={18}/></button>
         </div>
@@ -327,7 +335,7 @@ function EventTaskCard({ task, onUpdated }) {
         style={{
           backgroundColor: 'var(--bg-surface)',
           border: `1.5px solid ${borderColor}`,
-          borderRadius: 14, marginBottom: 10, overflow: 'hidden',
+          borderRadius: 18, marginBottom: 10, overflow: 'hidden',
           boxShadow: isOverdue ? '0 0 0 3px rgba(239,68,68,0.1)' : 'none',
           cursor: 'pointer', transition: 'transform 0.15s, box-shadow 0.15s'
         }}
@@ -335,7 +343,7 @@ function EventTaskCard({ task, onUpdated }) {
         onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow=isOverdue?'0 0 0 3px rgba(239,68,68,0.1)':'none'; }}
       >
         <div style={{ height: 3, backgroundColor: category?.color || '#0ea5e9', width: '100%' }} />
-        <div style={{ padding: '14px 18px' }}>
+        <div style={{ padding: '20px 24px' }}>
           <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8, flexWrap:'wrap' }}>
             <span style={{ fontSize:12, fontFamily:'monospace', fontWeight:900, color: category?.color || '#0ea5e9', backgroundColor:`${category?.color || '#0ea5e9'}15`, padding:'2px 8px', borderRadius:5 }}>
               {task.taskCode}
@@ -345,7 +353,7 @@ function EventTaskCard({ task, onUpdated }) {
               color: statusCfg.textHex || statusCfg.text }}>
               {statusCfg.label}
             </span>
-            {isOverdue && <span style={{ fontSize:11, padding:'2px 8px', borderRadius:5, fontWeight:800, backgroundColor:'#ef444420', color:'#ef4444', display:'flex', alignItems:'center', gap:3 }}><AlertTriangle size={11}/> Quá hạn</span>}
+            {isOverdue && <span style={{ fontSize:11, padding:'2px 8px', borderRadius:5, fontWeight:800, backgroundColor:'#ef444420', color:'#ef4444', display:'flex', alignItems:'center', gap:3 }}><AlertTriangle size={14}/> Quá hạn</span>}
             {isDueToday && <span style={{ fontSize:11, padding:'2px 8px', borderRadius:5, fontWeight:800, backgroundColor:'#ef444420', color:'#ef4444' }}>⏰ Hôm nay</span>}
             {dl && <span style={{ fontSize:11, color:'var(--text-muted)', marginLeft:'auto' }}>📅 {safeFormat()}</span>}
             {task.approvalStatus === 'review' && <span style={{ fontSize:10, padding:'2px 7px', borderRadius:5, fontWeight:800, backgroundColor:'rgba(14,165,233,0.15)', color:'#0ea5e9' }}>⏳ Chờ duyệt</span>}
@@ -451,10 +459,10 @@ function TaskUpdateModal({ task, onClose }) {
           <div
   className="task-detail-scroll"
   style={{
-    padding: '20px 24px',
+    padding: '28px 30px',
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
-    gap: 20,
+    gap: 24,
     overflowY: 'auto',
     overflowX: 'hidden',
     flex: 1,
@@ -476,8 +484,8 @@ function TaskUpdateModal({ task, onClose }) {
                   { label:'Lãnh đạo', value: task.deputyDirector || '—' },
                 ].map(f => (
                   <div key={f.label}>
-                    <div style={{ fontSize:10, fontWeight:700, color:'var(--text-muted)', marginBottom:2 }}>{f.label.toUpperCase()}</div>
-                    <div style={{ fontSize:13, fontWeight:600, color: f.color || 'var(--text-primary)' }}>{f.value}</div>
+                    <div style={{ fontSize:12, fontWeight:700, color:'var(--text-muted)', marginBottom:2 }}>{f.label.toUpperCase()}</div>
+                    <div style={{ fontSize:15, fontWeight:600, color: f.color || 'var(--text-primary)' }}>{f.value}</div>
                   </div>
                 ))}
               </div>
@@ -534,7 +542,7 @@ function TaskUpdateModal({ task, onClose }) {
                 <div style={{ display:'flex', gap:4 }}>
                   {[0,25,50,75,100].map(v => (
                     <button key={v} onClick={() => setProgress(v)}
-                      style={{ padding:'2px 7px', borderRadius:5, border:'none', fontSize:11, fontWeight:700, cursor:'pointer',
+                      style={{ padding:'5px 10px', borderRadius:5, border:'none', fontSize:13, fontWeight:700, cursor:'pointer',
                         backgroundColor: progress===v ? progressColor(v) : 'var(--bg-surface)',
                         color: progress===v ? '#fff' : 'var(--text-muted)' }}>
                       {v}%
@@ -567,7 +575,10 @@ function TaskUpdateModal({ task, onClose }) {
                   <input type="date" className="input" value={extDeadline}
                     onChange={e => setExtDeadline(e.target.value)}
                     min={task.deadline ? task.deadline.slice(0,10) : undefined}
-                    style={{ fontSize:13 }}/>
+                    style={{
+                    fontSize:15,
+                    padding:'12px 14px'
+}}/>
                 </div>
               </div>
               {extDeadline && (
@@ -594,8 +605,8 @@ function TaskUpdateModal({ task, onClose }) {
   style={{
     display:'flex',
     gap:10,
-    padding:'16px 20px',
-    borderTop:'1px solid var(--border)',
+    padding:'20px 28px',
+    backdropFilter:'blur(10px)',
     flexShrink: 0,
     background:'var(--bg-surface)'
   }}
@@ -649,24 +660,34 @@ function MonthlyTaskCard({ task, onUpdated }) {
         onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='none'; }}
       >
         <div style={{ height:3, backgroundColor: typeColor, width:'100%' }}/>
-        <div style={{ padding:'14px 18px' }}>
+        <div style={{ padding:'18px 22px' }}>
           <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8, flexWrap:'wrap' }}>
-            <span style={{ fontSize:12, fontFamily:'monospace', fontWeight:900, color:'#0ea5e9', backgroundColor:'#0ea5e915', padding:'2px 8px', borderRadius:5 }}>
+            <span
+  style={{
+    fontSize: 13,
+    fontFamily:'monospace',
+    fontWeight:900,
+    color:'#0ea5e9',
+    backgroundColor:'#0ea5e915',
+    padding:'2px 8px',
+    borderRadius:5
+  }}
+>
               {task.taskId}
             </span>
             <span style={{ fontSize:11, padding:'2px 8px', borderRadius:5, fontWeight:800, backgroundColor:`${typeColor}20`, color:typeColor }}>
               {task.taskType === 'R' ? 'Thường xuyên' : 'Phát sinh'}
             </span>
-            {task.completion && <span style={{ fontSize:11, padding:'2px 8px', borderRadius:5, fontWeight:800, backgroundColor:COMP[task.completion]?.bg, color:COMP[task.completion]?.color }}>{COMP[task.completion]?.label}</span>}
-            {isOverdue && <span style={{ fontSize:11, padding:'2px 8px', borderRadius:5, fontWeight:800, backgroundColor:'#ef444420', color:'#ef4444', display:'flex', alignItems:'center', gap:3 }}><AlertTriangle size={11}/> Quá hạn</span>}
-            {isDueToday && <span style={{ fontSize:11, padding:'2px 8px', borderRadius:5, fontWeight:800, backgroundColor:'#ef444420', color:'#ef4444' }}>⏰ Hôm nay</span>}
+            {task.completion && <span style={{ fontSize:13, padding:'4px 10px', borderRadius:5, fontWeight:800, backgroundColor:COMP[task.completion]?.bg, color:COMP[task.completion]?.color }}>{COMP[task.completion]?.label}</span>}
+            {isOverdue && <span style={{ fontSize:13, padding:'4px 10px', borderRadius:5, fontWeight:800, backgroundColor:'#ef444420', color:'#ef4444', display:'flex', alignItems:'center', gap:3 }}><AlertTriangle size={11}/> Quá hạn</span>}
+            {isDueToday && <span style={{ fontSize:13, padding:'4px 10px', borderRadius:5, fontWeight:800, backgroundColor:'#ef444420', color:'#ef4444' }}>⏰ Hôm nay</span>}
             {dl && <span style={{ fontSize:11, color:'var(--text-muted)', marginLeft:'auto' }}>📅 {safeFormat()}</span>}
           </div>
-          <div style={{ fontSize:15, fontWeight:700, color:'var(--text-primary)', marginBottom:10, lineHeight:1.4 }}>{task.taskName}</div>
+          <div style={{ fontSize:22, fontWeight:800, color:'var(--text-primary)', marginBottom:10, lineHeight:1.4 }}>{task.taskName}</div>
           <div>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:5 }}>
-              <span style={{ fontSize:12, fontWeight:600, color:'var(--text-muted)' }}>Tiến độ</span>
-              <span style={{ fontSize:14, fontWeight:900, color: progressColor(task.progress) }}>{task.progress}%</span>
+              <span style={{ fontSize:14, fontWeight:900, color:'var(--text-muted)' }}>Tiến độ</span>
+              <span style={{ fontSize:17, fontWeight:900, color: progressColor(task.progress) }}>{task.progress}%</span>
             </div>
             <ProgressBar value={task.progress} height={10}/>
           </div>
@@ -710,7 +731,15 @@ function MonthlyTaskUpdateModal({ task, onClose }) {
     <>
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)}/>}
       <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-        <div className="modal-content" style={{ maxWidth: 980, width: '96%', }}>
+        <div
+  className="modal-content"
+  style={{
+    maxWidth: 1180,
+    width: '98%',
+    maxHeight: '96vh',
+    borderRadius: 18
+  }}
+>
           <div
   style={{
     padding: '18px 22px',
@@ -1077,17 +1106,17 @@ export default function MyTasksPage() {
         <div style={{ position:'sticky', top:16, display:'flex', flexDirection:'column', gap:12 }}>
 
           {/* KPI 2x2 */}
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))', gap:8 }}>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
             {[
               { label:'Tổng CV',    value:total,   color:'#0ea5e9', icon:'📋' },
               { label:'Hoàn thành', value:done,    color:'#10b981', icon:'✅' },
               { label:'Đang làm',   value:inProg,  color:'#f59e0b', icon:'⏳' },
               { label:'Quá hạn',    value:overdue, color:'#ef4444', icon:'⚠️' },
             ].map(s => (
-              <div key={s.label} style={{ padding:'12px 8px', borderRadius:12, backgroundColor:'var(--bg-surface)', border:`1.5px solid ${s.color}20`, textAlign:'center' }}>
+              <div key={s.label} style={{ padding:'16px 12px', borderRadius:12, backgroundColor:'var(--bg-surface)', border:`1.5px solid ${s.color}20`, textAlign:'center' }}>
                 <div style={{ fontSize:16, marginBottom:3 }}>{s.icon}</div>
-                <div style={{ fontSize:22, fontWeight:900, color:s.color, lineHeight:1 }}>{s.value}</div>
-                <div style={{ fontSize:10, fontWeight:600, color:'var(--text-muted)', marginTop:3 }}>{s.label}</div>
+                <div style={{ fontSize:28, fontWeight:900, color:s.color, lineHeight:1 }}>{s.value}</div>
+                <div style={{ fontSize:12, fontWeight:600, color:'var(--text-muted)', marginTop:3 }}>{s.label}</div>
               </div>
             ))}
           </div>
