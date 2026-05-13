@@ -10,7 +10,7 @@ import TaskDetailModal from '../components/Tasks/TaskDetailModal';
 import { useFilterStore } from '../store/filterStore';
 
 const DEPT_LABELS = {
-  'LD-COM':'Hành chính tổng hợp','LD-INF':'Thông tin thống kê','LD-ADM':'Hành chính tổng hợp',
+  'LD-INF':'Thông tin thống kê','LD-ADM':'Hành chính tổng hợp',
   'LD-SER':'Dịch vụ','LD-INNO':'KN&ĐMST','LD-BOD':'Ban GĐ'
 };
 
