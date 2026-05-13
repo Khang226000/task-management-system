@@ -27,7 +27,7 @@ function LogDetailModal({ log, onClose }) {
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px 22px', borderBottom:'1px solid var(--border)' }}>
           <div style={{ display:'flex', alignItems:'center', gap:10 }}>
             <History size={18} style={{ color:'#0ea5e9' }}/>
-            <h3 style={{ fontSize:16, fontWeight:800, color:'var(--text-primary)', margin:0 }}>Chi tiết hoạt động</h3>
+            <h3 style={{ fontSize:18, fontWeight:800, color:'var(--text-primary)', margin:0 }}>Chi tiết hoạt động</h3>
           </div>
           <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', color:'var(--text-muted)' }}>
             <X size={20}/>
@@ -36,21 +36,21 @@ function LogDetailModal({ log, onClose }) {
         <div style={{ padding:'20px 22px', display:'flex', flexDirection:'column', gap:14 }}>
           {/* Thao tác */}
           <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-            <span style={{ fontSize:11, fontWeight:700, color:'var(--text-muted)', width:120 }}>THAO TÁC</span>
+            <span style={{ fontSize:13, fontWeight:700, color:'var(--text-muted)', width:120 }}>THAO TÁC</span>
             <span style={{ fontSize:13, padding:'4px 12px', borderRadius:7, fontWeight:700, backgroundColor:act.bg, color:act.color }}>
               {act.label}
             </span>
           </div>
           {/* Thời gian */}
           <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-            <span style={{ fontSize:11, fontWeight:700, color:'var(--text-muted)', width:120 }}>THỜI GIAN</span>
+            <span style={{ fontSize:13, fontWeight:700, color:'var(--text-muted)', width:120 }}>THỜI GIAN</span>
             <span style={{ fontSize:13, fontWeight:600, color:'var(--text-primary)' }}>
               {format(new Date(log.createdAt), 'HH:mm:ss - dd/MM/yyyy', { locale: vi })}
             </span>
           </div>
           {/* Người thực hiện */}
           <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-            <span style={{ fontSize:11, fontWeight:700, color:'var(--text-muted)', width:120 }}>NGƯỜI THỰC HIỆN</span>
+            <span style={{ fontSize:13, fontWeight:700, color:'var(--text-muted)', width:120 }}>NGƯỜI THỰC HIỆN</span>
             {log.user ? (
               <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                 <div style={{ width:28, height:28, borderRadius:'50%', backgroundColor:log.user.color||'#6366f1', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, fontWeight:900, color:'#fff' }}>
@@ -72,7 +72,7 @@ function LogDetailModal({ log, onClose }) {
           {log.entityId && (
             <div style={{ display:'flex', alignItems:'center', gap:10 }}>
               <span style={{ fontSize:11, fontWeight:700, color:'var(--text-muted)', width:120 }}>ĐỐI TƯỢNG</span>
-              <span style={{ fontSize:12, fontFamily:'monospace', color:'#0ea5e9', backgroundColor:'#0ea5e920', padding:'3px 10px', borderRadius:5 }}>
+              <span style={{ fontSize:14, fontFamily:'monospace', color:'#0ea5e9', backgroundColor:'#0ea5e920', padding:'5px 12px', borderRadius:5 }}>
                 {log.entityType} · {log.entityId}
               </span>
             </div>
@@ -144,7 +144,7 @@ export default function HistoryPage() {
     userService.getUsers().then(r => setUsers(r.data.data || [])).catch(() => {});
   }, []);
 
-  const selStyle = { fontSize:13, padding:'7px 12px', borderRadius:9, border:'1.5px solid var(--border)', backgroundColor:'var(--bg-input)', color:'var(--text-secondary)', outline:'none', cursor:'pointer' };
+  const selStyle = { fontSize:15, padding:'10px 14px', borderRadius:9, border:'1.5px solid var(--border)', backgroundColor:'var(--bg-input)', color:'var(--text-secondary)', outline:'none', cursor:'pointer' };
 
   const hasFilter = filterDate || filterAction || filterUser || search;
 
@@ -173,14 +173,14 @@ export default function HistoryPage() {
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12 }}>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
           <History size={22} style={{ color:'#0ea5e9' }}/>
-          <h2 style={{ fontSize:20, fontWeight:900, color:'var(--text-primary)', margin:0 }}>
+          <h2 style={{ fontSize:24, fontWeight:900, color:'var(--text-primary)', margin:0 }}>
             {isMember ? 'Lịch Sử Của Tôi' : 'Lịch Sử Hoạt Động'}
           </h2>
-          <span style={{ fontSize:12, padding:'2px 10px', borderRadius:10, backgroundColor:'#0ea5e920', color:'#0ea5e9', fontWeight:700 }}>
+          <span style={{ fontSize:14, padding:'2px 10px', borderRadius:10, backgroundColor:'#0ea5e920', color:'#0ea5e9', fontWeight:700 }}>
             {total} bản ghi
           </span>
         </div>
-        <button onClick={fetchLogs} style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', borderRadius:9, border:'1.5px solid var(--border)', backgroundColor:'var(--bg-hover)', color:'var(--text-secondary)', cursor:'pointer', fontSize:13, fontWeight:600 }}>
+        <button onClick={fetchLogs} style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 14px', borderRadius:9, border:'1.5px solid var(--border)', backgroundColor:'var(--bg-hover)', color:'var(--text-secondary)', cursor:'pointer', fontSize:15, fontWeight:600 }}>
           <RefreshCw size={14}/> Làm mới
         </button>
       </div>
@@ -190,13 +190,13 @@ export default function HistoryPage() {
 
         {/* Row 1: Quick filters + DatePicker */}
         <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
-          <div style={{ display:'flex', alignItems:'center', gap:5, color:'var(--text-muted)', fontSize:12, marginRight:4 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:5, color:'var(--text-muted)', fontSize:14, marginRight:4 }}>
             <Filter size={13}/> <span style={{ fontWeight:700 }}>Lọc nhanh:</span>
           </div>
 
           {/* Nút Tất cả */}
           <button onClick={() => applyQuick('')}
-            style={{ padding:'6px 14px', borderRadius:8, border:'none', fontSize:12, fontWeight:700, cursor:'pointer',
+            style={{ padding:'8px 16px', borderRadius:8, border:'none', fontSize:12, fontWeight:700, cursor:'pointer',
               backgroundColor: quickFilter==='' ? '#0ea5e9' : 'var(--bg-hover)',
               color: quickFilter==='' ? '#fff' : 'var(--text-secondary)', transition:'all 0.15s' }}>
             Tất cả
@@ -204,7 +204,7 @@ export default function HistoryPage() {
 
           {/* Nút Hôm nay */}
           <button onClick={() => applyQuick('today')}
-            style={{ padding:'6px 14px', borderRadius:8, border:'none', fontSize:12, fontWeight:700, cursor:'pointer',
+            style={{ padding:'8px 16px', borderRadius:8, border:'none', fontSize:12, fontWeight:700, cursor:'pointer',
               backgroundColor: quickFilter==='today' ? '#0ea5e9' : 'var(--bg-hover)',
               color: quickFilter==='today' ? '#fff' : 'var(--text-secondary)', transition:'all 0.15s' }}>
             Hôm nay
@@ -244,7 +244,7 @@ export default function HistoryPage() {
         <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap' }}>
           {/* Thao tác */}
           <div style={{ display:'flex', flexDirection:'column', gap:3 }}>
-            <label style={{ fontSize:11, color:'var(--text-muted)', fontWeight:600 }}>Thao tác</label>
+            <label style={{ fontSize:13, color:'var(--text-muted)', fontWeight:600 }}>Thao tác</label>
             <select value={filterAction} onChange={e => { setFilterAction(e.target.value); setPage(0); }} style={{ ...selStyle, width:150 }}>
               <option value="">Tất cả</option>
               {Object.entries(ACTION_CONFIG).map(([k,v]) => <option key={k} value={k}>{v.label}</option>)}
@@ -254,7 +254,7 @@ export default function HistoryPage() {
           {/* Người thực hiện — chỉ hiện với admin/director/manager */}
           {!isMember && (
           <div style={{ display:'flex', flexDirection:'column', gap:3 }}>
-            <label style={{ fontSize:11, color:'var(--text-muted)', fontWeight:600 }}>Người thực hiện</label>
+            <label style={{ fontSize:13, color:'var(--text-muted)', fontWeight:600 }}>Người thực hiện</label>
             <select value={filterUser} onChange={e => { setFilterUser(e.target.value); setPage(0); }} style={{ ...selStyle, width:160 }}>
               <option value="">Tất cả</option>
               {users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
@@ -264,7 +264,7 @@ export default function HistoryPage() {
 
           {/* Tìm kiếm */}
           <div style={{ display:'flex', flexDirection:'column', gap:3, flex:1, minWidth:180 }}>
-            <label style={{ fontSize:11, color:'var(--text-muted)', fontWeight:600 }}>Tìm kiếm nội dung</label>
+            <label style={{ fontSize:13, color:'var(--text-muted)', fontWeight:600 }}>Tìm kiếm nội dung</label>
             <div style={{ position:'relative' }}>
               <Search size={13} style={{ position:'absolute', left:10, top:'50%', transform:'translateY(-50%)', color:'var(--text-muted)' }}/>
               <input value={search} onChange={e => { setSearch(e.target.value); setPage(0); }}
@@ -278,7 +278,7 @@ export default function HistoryPage() {
               setQuickFilter(''); setFilterDate('');
               setFilterAction(''); setFilterUser(''); setSearch(''); setPage(0);
             }}
-              style={{ fontSize:11, padding:'4px 10px', borderRadius:6, border:'1px solid var(--border)', backgroundColor:'var(--bg-hover)', color:'var(--text-muted)', cursor:'pointer', marginTop:18 }}>
+              style={{ fontSize:13, padding:'4px 10px', borderRadius:6, border:'1px solid var(--border)', backgroundColor:'var(--bg-hover)', color:'var(--text-muted)', cursor:'pointer', marginTop:18 }}>
               ✕ Xóa lọc
             </button>
           )}
@@ -292,7 +292,7 @@ export default function HistoryPage() {
             <thead>
               <tr style={{ backgroundColor:'var(--bg-hover)' }}>
                 {['Ngày giờ','Thao tác','Người thực hiện','Nội dung thực hiện'].map((h,i) => (
-                  <th key={i} style={{ padding:'11px 16px', fontSize:11, fontWeight:800, textTransform:'uppercase', letterSpacing:'0.06em', color:'var(--text-muted)', borderBottom:'2px solid var(--border)', textAlign:'left', whiteSpace:'nowrap' }}>
+                  <th key={i} style={{ padding:'11px 16px', fontSize:13, fontWeight:800, textTransform:'uppercase', letterSpacing:'0.06em', color:'var(--text-muted)', borderBottom:'2px solid var(--border)', textAlign:'left', whiteSpace:'nowrap' }}>
                     {h}
                   </th>
                 ))}
@@ -327,7 +327,7 @@ export default function HistoryPage() {
 
                     {/* Ngày giờ */}
                     <td style={{ padding:'12px 16px', whiteSpace:'nowrap' }}>
-                      <div style={{ fontSize:13, fontWeight:700, color:'var(--text-primary)' }}>
+                      <div style={{ fontSize:15, fontWeight:700, color:'var(--text-primary)' }}>
                         {format(new Date(log.createdAt), 'yyyy-MM-dd HH:mm', { locale: vi })}
                       </div>
                     </td>
@@ -346,7 +346,7 @@ export default function HistoryPage() {
                           <div style={{ width:26, height:26, borderRadius:'50%', backgroundColor:log.user.color||'#6366f1', display:'flex', alignItems:'center', justifyContent:'center', fontSize:11, fontWeight:900, color:'#fff', flexShrink:0 }}>
                             {log.user.name?.charAt(0)}
                           </div>
-                          <span style={{ fontSize:13, fontWeight:600, color:'var(--text-primary)' }}>{log.user.name}</span>
+                          <span style={{ fontSize:15, fontWeight:600, color:'var(--text-primary)' }}>{log.user.name}</span>
                         </div>
                       ) : <span style={{ color:'var(--text-muted)' }}>—</span>}
                     </td>
@@ -354,7 +354,7 @@ export default function HistoryPage() {
                     {/* Nội dung */}
                     <td style={{ padding:'12px 16px' }}>
                       <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                        <span style={{ fontSize:13, color:'var(--text-secondary)' }}>{log.description}</span>
+                        <span style={{ fontSize:15, color:'var(--text-secondary)' }}>{log.description}</span>
                         <ExternalLink size={12} style={{ color:'var(--text-muted)', flexShrink:0, opacity:0.5 }}/>
                       </div>
                     </td>
@@ -368,16 +368,16 @@ export default function HistoryPage() {
         {/* Pagination */}
         {total > LIMIT && (
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px 16px', borderTop:'1px solid var(--border)' }}>
-            <span style={{ fontSize:12, color:'var(--text-muted)' }}>
+            <span style={{ fontSize:14, color:'var(--text-muted)' }}>
               Hiển thị {page*LIMIT+1}–{Math.min((page+1)*LIMIT, total)} / {total}
             </span>
             <div style={{ display:'flex', gap:6 }}>
               <button onClick={() => setPage(p => Math.max(0, p-1))} disabled={page===0}
-                style={{ padding:'5px 12px', borderRadius:7, border:'1px solid var(--border)', backgroundColor:'var(--bg-hover)', color:'var(--text-secondary)', cursor:page===0?'not-allowed':'pointer', opacity:page===0?0.5:1, fontSize:12 }}>
+                style={{ padding:'8px 14px', borderRadius:7, border:'1px solid var(--border)', backgroundColor:'var(--bg-hover)', color:'var(--text-secondary)', cursor:page===0?'not-allowed':'pointer', opacity:page===0?0.5:1, fontSize:14 }}>
                 ← Trước
               </button>
               <button onClick={() => setPage(p => p+1)} disabled={(page+1)*LIMIT >= total}
-                style={{ padding:'5px 12px', borderRadius:7, border:'1px solid var(--border)', backgroundColor:'var(--bg-hover)', color:'var(--text-secondary)', cursor:(page+1)*LIMIT>=total?'not-allowed':'pointer', opacity:(page+1)*LIMIT>=total?0.5:1, fontSize:12 }}>
+                style={{ padding:'8px 14px', borderRadius:7, border:'1px solid var(--border)', backgroundColor:'var(--bg-hover)', color:'var(--text-secondary)', cursor:(page+1)*LIMIT>=total?'not-allowed':'pointer', opacity:(page+1)*LIMIT>=total?0.5:1, fontSize:14 }}>
                 Sau →
               </button>
             </div>
