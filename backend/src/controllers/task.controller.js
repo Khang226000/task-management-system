@@ -1,4 +1,4 @@
-const { Task, User } = require('../models');
+const { Task, User, MonthlyTask } = require('../models');
 const { Op } = require('sequelize');
 const { logActivity } = require('../utils/activityLogger');
 
@@ -164,7 +164,7 @@ exports.createTask = async (req, res) => {
   try {
     // Làm sạch payload
     const allowed = [
-      'taskCode','parentCode','workCategory','taskName','leadDepartment',
+      'taskCode','parentCode','workCategory','taskName','leadDepartment','department',
       'assigneeId','collaborators','deputyDirector','startDate','deadline',
       'extendedDeadline','extensionReason','deliverable','progress',
       'taskType','status','completion','notes','month','year','order'
@@ -193,6 +193,25 @@ exports.createTask = async (req, res) => {
     }
 
     const task = await Task.create({ ...body, createdById: req.user.id });
+    await MonthlyTask.create({
+  taskId: task.id,
+
+  taskCode: task.taskCode,
+  taskName: task.taskName,
+
+  department: body.department,
+
+  month: body.month,
+  year: body.year,
+
+  assigneeId: task.assigneeId,
+  deputyDirector: task.deputyDirector,
+
+  progress: task.progress || 0,
+  status: task.status || 'not_started',
+
+  deadline: task.deadline
+});
     const fullTask = await Task.findByPk(task.id, { include: taskInclude });
     await logActivity({
       action: 'create', entityType: 'Task',
