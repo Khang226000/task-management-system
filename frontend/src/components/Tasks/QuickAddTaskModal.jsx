@@ -69,7 +69,7 @@ export default function QuickAddTaskModal({ onClose }) {
   // bộ phận cho MONTHLY TASK
   department: 'Hành chính tổng hợp',
 
-  assigneeId: '',, assigneeId: '', deputyDirector: 'GĐ-Hải',
+   assigneeId: '', deputyDirector: 'GĐ-Hải',
     deadline: '', taskType: 'R', status: 'not_started', progress: 0,
     deliverable: '', notes: '',
     month: new Date().getMonth() + 1, year: new Date().getFullYear()
