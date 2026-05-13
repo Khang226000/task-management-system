@@ -17,7 +17,7 @@ const COLUMNS = [
 ];
 
 const DEPT_OPTIONS = [
-  'KN&DMST',
+  'KN&ĐMST',
   'Hành chính',
   'Truyền thông',
   'Thông tin thống kê',
