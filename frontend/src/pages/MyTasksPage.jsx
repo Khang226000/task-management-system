@@ -423,6 +423,7 @@ function TaskUpdateModal({ task, onClose }) {
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)}/>}
       <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
         <div
+<div
   className="modal-content"
   style={{
     maxWidth: 560,
@@ -660,7 +661,7 @@ function MonthlyTaskCard({ task, onUpdated }) {
         onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='none'; }}
       >
         <div style={{ height:3, backgroundColor: typeColor, width:'100%' }}/>
-        <div style={{ padding:'18px 22px' }}>
+        <div style={{ padding:'20px 24px' }}>
           <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8, flexWrap:'wrap' }}>
             <span
   style={{
@@ -678,16 +679,16 @@ function MonthlyTaskCard({ task, onUpdated }) {
             <span style={{ fontSize:11, padding:'2px 8px', borderRadius:5, fontWeight:800, backgroundColor:`${typeColor}20`, color:typeColor }}>
               {task.taskType === 'R' ? 'Thường xuyên' : 'Phát sinh'}
             </span>
-            {task.completion && <span style={{ fontSize:13, padding:'4px 10px', borderRadius:5, fontWeight:800, backgroundColor:COMP[task.completion]?.bg, color:COMP[task.completion]?.color }}>{COMP[task.completion]?.label}</span>}
-            {isOverdue && <span style={{ fontSize:13, padding:'4px 10px', borderRadius:5, fontWeight:800, backgroundColor:'#ef444420', color:'#ef4444', display:'flex', alignItems:'center', gap:3 }}><AlertTriangle size={11}/> Quá hạn</span>}
-            {isDueToday && <span style={{ fontSize:13, padding:'4px 10px', borderRadius:5, fontWeight:800, backgroundColor:'#ef444420', color:'#ef4444' }}>⏰ Hôm nay</span>}
+            {task.completion && <span style={{ fontSize:11, padding:'2px 8px', borderRadius:5, fontWeight:800, backgroundColor:COMP[task.completion]?.bg, color:COMP[task.completion]?.color }}>{COMP[task.completion]?.label}</span>}
+            {isOverdue && <span style={{ fontSize:11, padding:'2px 8px', borderRadius:5, fontWeight:800, backgroundColor:'#ef444420', color:'#ef4444', display:'flex', alignItems:'center', gap:3 }}><AlertTriangle size={10}/> Quá hạn</span>}
+            {isDueToday && <span style={{ fontSize:11, padding:'2px 8px', borderRadius:5, fontWeight:800, backgroundColor:'#ef444420', color:'#ef4444' }}>⏰ Hôm nay</span>}
             {dl && <span style={{ fontSize:11, color:'var(--text-muted)', marginLeft:'auto' }}>📅 {safeFormat()}</span>}
           </div>
-          <div style={{ fontSize:22, fontWeight:800, color:'var(--text-primary)', marginBottom:10, lineHeight:1.4 }}>{task.taskName}</div>
+          <div style={{ fontSize:15, fontWeight:700, color:'var(--text-primary)', marginBottom:10, lineHeight:1.4 }}>{task.taskName}</div>
           <div>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:5 }}>
-              <span style={{ fontSize:14, fontWeight:900, color:'var(--text-muted)' }}>Tiến độ</span>
-              <span style={{ fontSize:17, fontWeight:900, color: progressColor(task.progress) }}>{task.progress}%</span>
+              <span style={{ fontSize:12, fontWeight:600, color:'var(--text-muted)' }}>Tiến độ</span>
+              <span style={{ fontSize:14, fontWeight:900, color: progressColor(task.progress) }}>{task.progress}%</span>
             </div>
             <ProgressBar value={task.progress} height={10}/>
           </div>
@@ -742,7 +743,7 @@ function MonthlyTaskUpdateModal({ task, onClose }) {
 >
           <div
   style={{
-    padding: '18px 22px',
+    padding: '16px 20px',
     borderBottom: '1px solid var(--border)',
     background: 'var(--bg-surface)',
     position: 'sticky',
@@ -754,9 +755,24 @@ function MonthlyTaskUpdateModal({ task, onClose }) {
               <span style={{ fontSize:13, fontFamily:'monospace', fontWeight:900, color:'#0ea5e9', backgroundColor:'#0ea5e915', padding:'3px 10px', borderRadius:6 }}>{task.taskId}</span>
               <span style={{ fontSize:11, padding:'2px 8px', borderRadius:5, fontWeight:800, backgroundColor:`${typeColor}20`, color:typeColor }}>{task.taskType === 'R' ? 'Thường xuyên' : 'Phát sinh'}</span>
             </div>
-            <h3 style={{ fontSize:16, fontWeight:800, color:'var(--text-primary)', margin:0 }}>{task.taskName}</h3>
+            <h3 style={{ fontSize:15, fontWeight:800, color:'var(--text-primary)', margin:0 }}>{task.taskName}</h3>
           </div>
-          <div style={{ padding:'20px', display:'flex', flexDirection:'column', gap:16 }}>
+          <div
+  className="task-detail-scroll"
+  style={{
+    padding: '28px 30px',
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: 24,
+    overflowY: 'auto',
+    overflowX: 'hidden',
+    flex: 1,
+    minHeight: 0,
+    maxHeight: 'calc(92vh - 140px)',
+    alignItems: 'start',
+    paddingRight: 12
+  }}
+>
 
             {/* ── Thông tin chi tiết CV tháng (readonly) ── */}
             <div style={{ padding:'12px 14px', borderRadius:10, backgroundColor:'var(--bg-hover)', border:'1px solid var(--border)', display:'flex', flexDirection:'column', gap:8 }}>
@@ -1086,7 +1102,7 @@ export default function MyTasksPage() {
 
           {tab === 'event' && (
             loading
-              ? [1,2,3].map(i => <div key={i} style={{ height:90, borderRadius:14, backgroundColor:'var(--bg-hover)', marginBottom:10, animation:'pulse 1.5s infinite' }}/>)
+              ? [1,2,3].map(i => <div key={i} style={{ height:90, borderRadius:18, backgroundColor:'var(--bg-hover)', marginBottom:10,minHeight:'unset', animation:'pulse 1.5s infinite' }}/>)
               : sortedEvents.length === 0
                 ? <div style={{ textAlign:'center', padding:60, color:'var(--text-muted)' }}><CheckCircle size={36} style={{ margin:'0 auto 10px', opacity:0.3 }}/><p>Không có công việc nào trong tháng {month}/{year}</p></div>
                 : sortedEvents.map(t => <EventTaskCard key={t.id} task={t} onUpdated={fetchData}/>)
